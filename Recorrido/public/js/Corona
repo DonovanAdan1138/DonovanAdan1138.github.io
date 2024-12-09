@@ -1,0 +1,122 @@
+import * as THREE from "./three.module.js";
+import {RoundedBoxGeometry}from".js/RoundedBoxGeometry.js";
+export default function Co ({x,y,z}){
+
+ //Corona
+var ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+//scene.add(ambientLight);
+var pointLight = new THREE.PointLight(0xffffff, 1);
+pointLight.position.set(10, 10, 10);
+//scene.add(pointLight);
+var crownGeometry = new THREE.TorusGeometry(5, 1.2, 16, 100); 
+var crownMaterial = new THREE.MeshStandardMaterial({ color: 0x228B22 }); 
+var crown = new THREE.Mesh(crownGeometry, crownMaterial);
+//scene.add(crown);
+var sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+var colors = [0xff0000, 0xffff00, 0xffffff, 0x0000ff]; 
+
+
+  
+  var geometry02=new THREE.SphereGeometry(2,15,15);
+    var material02=new THREE.MeshBasicMaterial({color:0x960ff});
+    var mesh02=new THREE.Mesh(geometry02,material02);
+   //scene.add(mesh02);
+    mesh02.position.set(5,-1,1);
+    mesh02.scale.set(.3,.3,.3);
+
+
+    var mesh02Clone2 = mesh02.clone();
+mesh02Clone2.position.set(-5, 0, 0);
+//scene.add(mesh02Clone2);
+mesh02Clone2.position.set(-4.5,2,1);
+    mesh02Clone2.scale.set(.3,.3,.3);
+
+
+    var geometry03=new THREE.SphereGeometry(2,15,15);
+    var material03=new THREE.MeshBasicMaterial({color:0xff0000});
+    var mesh03=new THREE.Mesh(geometry03,material03);
+   // scene.add(mesh03);
+    mesh03.position.set(4,3,1);
+    mesh03.scale.set(.3,.3,.3);
+
+    var mesh03Clone3 = mesh03.clone();
+    mesh03Clone3.position.set(-5, 0, 0);
+//scene.add(mesh03Clone3);
+mesh03Clone3.position.set(-.5,-5,1);
+    mesh03Clone3.scale.set(.3,.3,.3);
+
+
+    var geometry04=new THREE.SphereGeometry(2,15,15);
+    var material04=new THREE.MeshBasicMaterial({color:0xfbff00});
+    var mesh04=new THREE.Mesh(geometry04,material04);
+    //scene.add(mesh04);
+    mesh04.position.set(0,5,1);
+    mesh04.scale.set(.3,.3,.3);
+
+    var mesh04Clone4 = mesh04.clone();
+    mesh04Clone4.position.set(-5, 0, 0);
+//scene.add(mesh04Clone4);
+mesh04Clone4.position.set(-4,-3,1);
+    mesh04Clone4.scale.set(.3,.3,.3);
+
+
+    var geometry05 = new THREE.SphereGeometry(2, 15, 15);
+var material05 = new THREE.MeshBasicMaterial({ color: 0x9700ff});
+var mesh05 = new THREE.Mesh(geometry05, material05);
+//scene.add(mesh05);
+mesh05.position.set(-3, 4, 1);
+mesh05.scale.set(0.3, 0.3, 0.3);
+
+var mesh05Clone5 = mesh05.clone();
+mesh05Clone5.position.set(-5, 0, 0);
+//scene.add(mesh05Clone5);
+mesh05Clone5.position.set(3, -4, 1);
+mesh05Clone5.scale.set(0.3, 0.3, 0.3);
+
+
+
+var geometry06 = new THREE.SphereGeometry(2, 15, 15);
+var material06 = new THREE.MeshBasicMaterial({ color: 0xff00f7 });
+var mesh06 = new THREE.Mesh(geometry06, material06);
+//scene.add(mesh06);
+mesh06.position.set(2.5, 4.5, 1);
+mesh06.scale.set(0.3, 0.3, 0.3);
+
+var mesh06Clone6 = mesh06.clone();
+mesh06Clone6.position.set(-5, 0, 0);
+//scene.add(mesh06Clone6);
+mesh06Clone6.position.set(-5, -1, 1);
+mesh06Clone6.scale.set(0.3, 0.3, 0.3);
+
+
+var geometry07 = new THREE.SphereGeometry(2, 15, 15);
+var material07 = new THREE.MeshBasicMaterial({ color: 0x00ffd4 });
+var mesh07 = new THREE.Mesh(geometry07, material07);
+//scene.add(mesh07);
+mesh07.position.set(5, 1, 1);
+mesh07.scale.set(0.3, 0.3, 0.3);
+
+var mesh07Clone7 = mesh07.clone();
+mesh07Clone7.position.set(-5, 0, 0);
+//scene.add(mesh07Clone7);
+mesh07Clone7.position.set(-2.5, -4.5, 1);
+mesh07Clone7.scale.set(0.3, 0.3, 0.3);
+
+
+
+var geometry08 = new THREE.SphereGeometry(2, 15, 15);
+var material08 = new THREE.MeshBasicMaterial({ color: 0xffb600 });
+var mesh08 = new THREE.Mesh(geometry08, material08);
+//scene.add(mesh08);
+mesh08.position.set(1.5, -4.5, 1);
+mesh08.scale.set(0.3, 0.3, 0.3);
+
+var mesh08Clone8 = mesh08.clone();
+mesh08Clone8.position.set(-5, 0, 0);
+//scene.add(mesh08Clone8);
+mesh08Clone8.position.set(4, -3, 1);
+mesh08Clone8.scale.set(0.3, 0.3, 0.3);
+
+
+return Co;
+}

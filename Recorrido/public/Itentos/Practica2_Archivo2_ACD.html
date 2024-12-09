@@ -1,0 +1,189 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+<meta charset="UTF-8" /> 
+     <title>Archivo base</title>
+     <style>
+     </style>
+</head>
+<body>
+<canvas id="myCanvas">
+    <!--El elemento HTML canvas se puede utilizar para dibujar gráficos a través de 
+        secuencias de comandos (por lo general JavaScript ).-->
+</canvas>
+<script type="importmap"> 
+    {
+        "imports":{
+            "three": "./js/three.module.js",
+            "three/OrbitControls": "./js/OrbitControls.js" 
+        }
+}
+</script>
+<script type="module"> 
+    //👉🏽 Mandar llamar a la librería
+    import * as THREE from 'three'; 
+    import {OrbitControls} from 'three/OrbitControls';
+    console.log(OrbitControls);
+    import {RoundedBoxGeometry}from"./js/RoundedBoxGeometry.js";
+
+    //👉🏽 Renderer - Realiza una conexión entre el código y el canvas
+    var renderer = new THREE.WebGLRenderer({canvas: document.getElementById('myCanvas'),antialias: true});
+    renderer.setPixelRatio(window.decivePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x00000);
+
+    //🎬 Creando nueva escena 
+    var scene = new THREE.Scene();
+
+    //🎥 Agregar una cámara de perspectiva
+    var camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 5000);
+    scene.add(camera);
+
+    //👉🏽Settings de la cámara
+    camera.position.set(0, 4, 25);
+
+    //👉🏽Añadiendo los OrbitControls
+    var controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    //✏️GridHelper
+    const gridHelper = new THREE.GridHelper(100,10);
+    scene.add (gridHelper);
+
+    //✏️Ejes
+    const axesHelper = new THREE.AxesHelper(50);
+    scene.add (axesHelper);
+
+    
+    //PLANO
+    var plano = new THREE.PlaneGeometry(100,100);
+    var material01 = new THREE.MeshBasicMaterial({color: 0xcdc6ff, side : THREE.DoubleSide});
+    var mesh = new THREE.Mesh(plano,material01);
+    scene.add(mesh);
+    mesh.position.set(0,0,0);
+    mesh.rotation.set(1.57,0,0);
+    plano.receiveShadow=true;
+
+    //FLOR
+    var geometry = new RoundedBoxGeometry(4,20,4,10,1);
+    var material = new THREE.MeshLambertMaterial({color:0xFFFFFF,wireframe:true});
+    var mesh01 = new THREE.Mesh(geometry,material);
+    scene.add(mesh01);
+    mesh01.castShadow=true;
+    mesh01.position.set(0,10,0);
+   
+
+    var mesh02 = mesh01.clone();
+    scene.add(mesh02);
+    mesh02.castShadow=true;
+    mesh02.position.set (0,10,0);
+    mesh02.rotation.set (0,0,1.57);
+
+
+    var mesh03 = mesh01.clone();
+    scene.add(mesh03);
+    mesh03.castShadow=true;
+    mesh03.position.set (0,10,0);
+    mesh03.rotation.set (0,0,.785);
+
+
+    var mesh04 = mesh01.clone();
+    scene.add(mesh04);
+    mesh04.castShadow=true;
+    mesh04.position.set (0,10,0);
+    mesh04.rotation.set (0,0,-0.785);
+  
+
+    var flor1 = new THREE.Group();
+    flor1.add(mesh01,mesh02,mesh03,mesh04);
+    scene.add(flor1);
+
+
+    var flor2 = flor1.clone();
+    scene.add(flor2);
+    flor2.position.set(-35,0,0);
+    
+
+    var flor3 = flor1.clone();
+    scene.add(flor3);
+    flor3.position.set(40,0,0);
+
+    //luces POINT
+    var Point01 = new THREE.PointLight(0xdd33ff,4,20,0.5);
+    var helper=new THREE.PointLightHelper(Point01);
+     scene.add(helper);
+    Point01.position.set(0,28,0);
+    scene.add(Point01);
+
+    var Point02 = new THREE.PointLight(0x00ff9ef,4,20,0.5);
+    var helper01=new THREE.PointLightHelper(Point02);
+     scene.add(helper01);
+    Point02.position.set(40,28,0);
+    scene.add(Point02);
+
+    var Point03 = new THREE.PointLight(0xff0000,4,20,0.5);
+    var helper02=new THREE.PointLightHelper(Point03);
+     scene.add(helper02);
+    Point03.position.set(-35,28,0);
+    scene.add(Point03);
+
+
+//spot
+var spot01=new THREE.SpotLight(0xdd33ff,1,28,0.6,0.2,0);
+     scene.add(spot01);
+     var helper01=new THREE.SpotLightHelper(spot01);
+     scene.add(helper01);
+     spot01.target.position.set(0,0,0);
+     spot01.position.set(0,28,0);
+
+     var spot02=new THREE.SpotLight(0x00ff9e,1,28,0.6,0.2,0);
+     scene.add(spot02);
+     var helper02=new THREE.SpotLightHelper(spot02);
+     scene.add(helper02);
+     spot02.target.position.set(0,0,0);
+     spot02.position.set(40,28,0);
+
+     var spot03=new THREE.SpotLight(0xff0000,1,30,0.6,0.2,0);
+     scene.add(spot03);
+     var helper03=new THREE.SpotLightHelper(spot03);
+     scene.add(helper03);
+     spot03.target.position.set(0,0,0);
+     spot03.position.set(-35,28,0);
+
+     //Shadows
+     Point01.castShadow=true;
+     Point01.Shadowbias=0.0001;
+     Point01.shadow.mapSize.width=1024;
+     Point01.shadow.mapSize.heith=1024;
+     scene.add(Point01);
+     
+     Point01.castShadow=true;
+     Point01.Shadowbias=0.0001;
+     Point01.shadow.mapSize.width=1024;
+     Point01.shadow.mapSize.heith=1024;
+     scene.add(Point01);
+     Point01.castShadow=true;
+     Point01.Shadowbias=0.0001;
+     Point01.shadow.mapSize.width=1024;
+     Point01.shadow.mapSize.heith=1024;
+     scene.add(Point01);
+      //🎰🎰Rendering y animación
+      requestAnimationFrame(render);
+      function render() {
+
+      //🪄🪄 Animación
+
+      flor1.rotation.y  +=0.01;
+      flor2.rotation.y +=0.01;
+      flor3.rotation.y +=0.01;
+      controls.update();
+
+      
+      //Llamado para renderizar y volver a llamar a la misma función (render)
+      renderer.render(scene, camera);
+      requestAnimationFrame(render);
+      }
+</script>
+</body>
+</html>
