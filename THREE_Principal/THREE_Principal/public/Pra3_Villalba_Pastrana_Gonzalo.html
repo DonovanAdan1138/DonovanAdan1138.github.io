@@ -1,0 +1,207 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+<meta charset="UTF-8" /> 
+     <title>Pra3_Villalba_Pastrana_Gonzalo</title>
+     <style>
+     </style>
+</head>
+<body>
+<canvas id="myCanvas">
+    <!--El elemento HTML canvas se puede utilizar para dibujar gráficos a través de 
+        secuencias de comandos (por lo general JavaScript ).-->
+</canvas>
+<script type="importmap"> 
+    {
+        "imports":{
+            "three": "./js/three.module.js",
+            "three/OrbitControls": "./js/OrbitControls.js" 
+        }
+}
+</script>
+<script type="module"> 
+    //👉🏽 Mandar llamar a la librería
+    import * as THREE from 'three'; 
+    import {OrbitControls} from 'three/OrbitControls';
+    import {RoundedBoxGeometry} from'./js/RoundedBoxGeometry.js';
+
+    console.log(OrbitControls);
+
+    //👉🏽 Renderer - Realiza una conexión entre el código y el canvas
+    var renderer = new THREE.WebGLRenderer({canvas: document.getElementById('myCanvas'),antialias: true});
+    renderer.setPixelRatio(window.decivePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x0);
+
+    //🎬 Creando nueva escena 
+    var scene = new THREE.Scene();
+
+
+
+    //🎥 Agregar una cámara de perspectiva
+    var camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 5000);
+    scene.add(camera);
+
+
+
+    //👉🏽Settings de la cámara
+    camera.position.set(0, 4, 25);
+
+    //👉🏽Añadiendo los OrbitControls
+    var controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+
+    //✏️GridHelper
+    const gridHelper = new THREE.GridHelper(50,10);
+    scene.add (gridHelper);
+
+    //✏️Ejes
+    const axesHelper = new THREE.AxesHelper(50);
+    scene.add (axesHelper);
+
+
+    // 🪄🪄 SECCIÓN DE CÓDIGO 🪄🪄
+    
+    //Luces
+    var light=new THREE.AmbientLight(0xffffff,0.5)
+    light.position.set(50,50,50);
+    scene.add(light);
+
+    var light1=new THREE.DirectionalLight(0xffffff,1);
+    light1.position.set(50,50,50);
+    scene.add(light1);
+    var geometry01= new THREE.BoxGeometry(50,0.5,50,12,12,12);
+    
+    //luz
+    var light3=new THREE.HemisphereLight(0xffffff,0x000000,0.2);
+    light3.position.set(0,40,0);
+    scene.add(light3);
+
+    var geometry01=new THREE.BoxGeometry(60,2,55,12,12,12);
+    var material01= new THREE.MeshLambertMaterial({color:0x5d6d7e  });
+    var mesh01= new THREE.Mesh(geometry01,material01);
+    mesh01.receiveShadow=true;
+    scene.add(mesh01);
+    mesh01.position.set(0,-1,0);
+
+
+//SpotLight1
+var light07=new THREE.SpotLight(0xe67e22,1,20,0.36,0.9,0);
+scene.add(light07);
+var helper7=new THREE.SpotLightHelper(light07);
+scene.add(helper7);
+light07.target.position.set(0,0,0);
+scene.add(light07.target);
+light07.position.set(0,20,0);
+
+//sombra
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFShadowMap;
+
+//sombra de SpotLight
+light07.castShadow=true;
+light07.shadowbias=0.0001;
+light07.shadow.mapSize.width=1024;
+light07.shadow.mapSize.height=1024;
+scene.add(light07);
+
+//spot 2
+var light08=new THREE.SpotLight(0x5b2c6f ,1,20,0.36,0.9,0);
+scene.add(light08);
+var helper8=new THREE.SpotLightHelper(light08);
+scene.add(helper8);
+light08.target.position.set(20,2,0);
+scene.add(light08.target);
+light08.position.set(20,20,0);
+
+//sombra de Spot 2
+light08.castShadow=true;
+light08.shadowbias=0.0001;
+light08.shadow.mapSize.width=1024;
+light08.shadow.mapSize.height=1024;
+scene.add(light08);
+
+
+//spot 3
+var light09= new THREE.SpotLight(0x239b56 ,1,20,0.36,0.9,0);
+scene.add(light09);
+var helper9=new THREE.SpotLightHelper(light09);
+scene.add(helper9);
+light09.target.position.set(-20,0,0);
+scene.add(light09.target);
+light09.position.set(-20,20,0);
+//sombra de spot 3
+light09.castShadow=true;
+light09.shadowbias=0.0001;
+light09.shadow.mapSize.width=1024;
+light09.shadow.mapSize.height=1024;
+scene.add(light07);
+
+   //flor1
+   var petalo=new RoundedBoxGeometry(2,10,2,15,0.5);
+   var material=new THREE.MeshLambertMaterial({color:0xFFC300,wireframe:true});
+   var mesh02=new THREE.Mesh(petalo,material);
+   mesh02.castShadow=true;
+   scene.add(mesh02);
+
+   var petalo=new RoundedBoxGeometry(2,10,2,15,0.5);
+   var mesh03=new THREE.Mesh(petalo,material);
+   mesh03.castShadow=true;
+   scene.add(mesh03);
+   mesh03.rotation.set(0,0,0.785);
+
+   var petalo=new RoundedBoxGeometry(2,10,2,15,0.5);
+   var mesh04=new THREE.Mesh(petalo,material);
+   mesh04.castShadow=true;
+   scene.add(mesh04);
+   mesh04.rotation.set(0,0,-0.785);
+
+   var petalo=new RoundedBoxGeometry(2,10,2,15,0.5);
+   var mesh05=new THREE.Mesh(petalo,material);
+   mesh05.castShadow=true;
+   scene.add(mesh05);
+   mesh05.rotation.set(0,0,8);
+
+   //Flor agrupada
+   var flor1=new THREE.Group();
+   flor1.add(mesh02,mesh03,mesh04,mesh05);
+   scene.add(flor1);
+   flor1.position.set(0,5,0);
+
+   //Derecha
+   var flor2=flor1.clone();
+   scene.add(flor2);
+   flor2.position.set(20,5,0);
+
+   //Izquierda
+   var flor3=flor1.clone();
+   scene.add(flor3);
+   flor3.position.set(-20,5,0);
+
+      //🎰🎰Rendering y animación
+      requestAnimationFrame(render);
+      function render() {
+
+      //🪄🪄 Animación
+
+//En medio 
+flor1.rotation.y +=0.08;
+flor1.rotation.x +=0.0;
+flor1.rotation.z +=0.5;
+//derecha
+flor2.rotation.x +=0.07;
+flor2.rotation.z +=0.10;
+//Izquierda
+flor3.rotation.z +=0.5;
+flor3.rotation.x +=0.05;
+flor3.rotation.z +=0.05;
+
+      //(render)
+      renderer.render(scene, camera);
+      requestAnimationFrame(render);
+      }
+</script>
+</body>
+</html>

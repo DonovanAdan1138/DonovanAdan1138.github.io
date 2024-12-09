@@ -1,0 +1,1988 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+<meta charset="UTF-8" /> 
+     <title>Archivo base</title>
+     <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        #boton {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          font-size: 40px;
+          cursor: pointer;
+        }
+        #activ {
+          color: rgb(255, 0, 0);
+        }
+   </style>
+</head>
+<body>
+    <!--Boton para activar el pointerlock-->
+    <div id="boton">
+      Para comenzar da clic en + para activar <p id="activ">(  )</p>Mira al rededor usando el mouse, pulsa Esc para parar
+    </div>
+      <!--Representa el contenido de un documento HTML-->
+  <canvas id="myCanvas">
+      <!--El elemento HTML canvas se puede utilizar para dibujar gráficos a través de 
+          secuencias de comandos (por lo general JavaScript ).-->
+  </canvas>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./js/three.module.js",
+        "three/PointerLockControls": "./js/PointerLockControls.js",
+        "three/interactive": "./js/three.interactive.js"
+      }
+    }
+  </script>
+  <script type="module">
+    // 📚  Librerías importadas para hacer funcionar three.js y el OrbitControls
+    import * as THREE from 'three';
+    import {RoundedBoxGeometry} from './js/js/RoundedBoxGeometry.js';
+      import { InteractionManager } from 'three/interactive';//añade libreria itneractiva
+      import { TWEEN } from './js/tween.module.min.js'; // Libreria movimiento suave
+      import { PointerLockControls } from 'three/PointerLockControls'; //control de camara
+
+    //IMPORTAR OBJETOS
+    import Plat1 from "./js/plato.js"
+  import Mu from "./js/Muñeco.js"
+  import ar from "./js/Arbol.js"
+  import sf from "./js/esferas.js"
+  import ESC1 from "./js/reg1.js"
+import ESC2 from "./js/reg2.js"
+import ESC3 from "./js/reg3.js"
+import ESC4 from "./js/reg4.js"
+import ESC5 from "./js/galleta.js"
+
+    //👉🏽 Renderer - Realiza una conexión entre el código y el canvas
+    var renderer = new THREE.WebGLRenderer({canvas: document.getElementById('myCanvas'),antialias: true});
+    renderer.setPixelRatio(window.decivePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x85929E);
+
+    renderer.xr.enabled = true;
+    renderer.xr.setReferenceSpaceType('local');
+
+    document.body.appendChild(renderer.domElement);
+    //document.body.appendChild(VRButton.createButton(renderer));
+
+
+
+    //🎬 Creando nueva escena 
+    var scene = new THREE.Scene();
+
+    //🎥🎥 Agregar una cámara de perspectiva
+
+        // Configuración de cámara y escenario ######
+
+        var camera = new THREE.PerspectiveCamera(790, window.innerWidth / window.innerHeight, .1, 1000);
+        camera.position.set(0, 0, 0);
+
+        // agregar el pointlock ########
+        var controls = new PointerLockControls( camera, renderer.domElement );
+        document.getElementById('activ').onclick=()=>{
+          controls.lock()
+        }
+        controls.addEventListener( 'lock', function () {
+          boton.style.display = 'none';
+        } );
+        controls.addEventListener( 'unlock', function () {
+          boton.style.display = '';
+        } );
+
+        // Añadir interactionManager #######
+        var interactionManager = new InteractionManager(
+          renderer,
+          camera,
+          renderer.domElement
+        );
+
+        var scene =new THREE.Scene();
+
+      // Evento para redimensionar el canvas
+      // Sizes: Objeto donde se toman los tamaños interiores 'inner' de la ventana.
+      const sizes = {
+      width: window.innerWidth,
+      height: window.innerHeight,
+      };
+
+      // Tomando el 'canvas' mediante el id 'myCanvas' del HTML para cambiar sus dimensiones
+      const canvas = document.getElementById('myCanvas');
+
+      // Evento que se ejecutará al redimensionar 'resize' nuestra ventana
+      window.addEventListener('resize', () => {
+
+      // Actualizando los valores del objeto 'sizes' con las medidas internas de la ventana
+      sizes.width = window.innerWidth;
+      sizes.height = window.innerHeight;
+
+      // Actualización de los valores en la cámara como la relación-aspecto y la
+      //matriz de proyección.
+      camera.aspect = sizes.width / sizes.height;
+      camera.updateProjectionMatrix();
+
+      // Aplicando al render el nuevo tamaño del 'viewport'
+      renderer.setSize(sizes.width, sizes.height);
+      });
+
+      //Settings de la cámara
+      camera.position.set(0, 4, 50);
+    //👉🏽Añadiendo los OrbitControls
+    //var controls = new OrbitControls(camera, renderer.domElement);
+    //controls.enableDamping = true;
+    //controls.dampingFactor = 0.05;
+
+    //✏️GridHelper
+    const gridHelper = new THREE.GridHelper(50,10);
+    scene.add (gridHelper);
+
+    //✏️Ejes
+    const axesHelper = new THREE.AxesHelper(50);
+    scene.add (axesHelper);
+  
+
+    // 🪄🪄 SECCIÓN DE CÓDIGO 🪄🪄
+
+////////////////////////////////////////////////////
+///Luz
+var ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+var pointLight = new THREE.PointLight(0xffffff, 1);
+pointLight.position.set(10, 10, 10);
+scene.add(pointLight);
+
+    //plano
+    var cube=new THREE.BoxGeometry(55,0.5,45,10,0.5);
+     var material=new THREE.MeshLambertMaterial({color:0xee0101 });
+     var mesh=new THREE.Mesh(cube,material);
+     scene.add(mesh);
+     mesh.position.set(0,.5,0);
+     mesh.receiveShadow = true;
+
+    var loader = new THREE.TextureLoader();
+    var bgTexture = loader.load('./images/1.jpg');
+    scene.background = bgTexture;
+
+   //BASE
+   var geometry= new THREE.BoxGeometry(300,0.1,100);
+     var material= new THREE.MeshBasicMaterial({color:0xf2f3f4 });
+     var mesh01= new THREE.Mesh(geometry,material);
+     mesh01.receiveShadow=true;
+     scene.add(mesh01); 
+     mesh01.position.set(0,0,0);
+
+     ///Casa
+
+   // Material para la casa (marrón)
+   var gingerbreadMaterial = new THREE.MeshBasicMaterial({ color: 0xD2691E });
+        
+        // Material para el techo (rojo)
+        var roofMaterial = new THREE.MeshBasicMaterial({ color: 0x8B0000 });
+
+        // Grupo para la casa
+        var house = new THREE.Group();
+
+        // --- Pared frontal con puerta abierta ---
+        var frontWallShape = new THREE.Shape();
+        frontWallShape.moveTo(-1, 1); // Parte superior izquierda
+        frontWallShape.lineTo(-1, -1); // Parte inferior izquierda
+        frontWallShape.lineTo(-0.3, -1); // Lado izquierdo de la puerta
+        frontWallShape.lineTo(-0.3, 0); // Esquina superior izquierda de la puerta
+        frontWallShape.lineTo(0.3, 0); // Esquina superior derecha de la puerta
+        frontWallShape.lineTo(0.3, -1); // Lado derecho de la puerta
+        frontWallShape.lineTo(1, -1); // Parte inferior derecha
+        frontWallShape.lineTo(1, 1); // Parte superior derecha
+        frontWallShape.lineTo(-1, 1); // Cerrar forma
+
+        var frontWallGeometry = new THREE.ShapeGeometry(frontWallShape);
+        var frontWall = new THREE.Mesh(frontWallGeometry, gingerbreadMaterial);
+        frontWall.position.set(0, 0, -1);
+        house.add(frontWall);
+
+        // --- Pared trasera ---
+        var wallGeometry = new THREE.BoxGeometry(2, 2, 0.2);
+        var backWall = new THREE.Mesh(wallGeometry, gingerbreadMaterial);
+        backWall.position.set(0, 0, 1);
+        house.add(backWall);
+
+        // --- Paredes laterales ---
+        var sideWallGeometry = new THREE.BoxGeometry(0.2, 2, 2);
+        var leftWall = new THREE.Mesh(sideWallGeometry, gingerbreadMaterial);
+        leftWall.position.set(-1, 0, 0);
+        house.add(leftWall);
+
+        var rightWall = leftWall.clone();
+        rightWall.position.set(1, 0, 0);
+        house.add(rightWall);
+
+        // --- Techo ---
+        var roofGeometry = new THREE.ConeGeometry(1.5, 1, 4);
+        var roof = new THREE.Mesh(roofGeometry, roofMaterial);
+        roof.rotation.y = Math.PI / 4;
+        roof.position.set(0, 1, 0);
+        house.add(roof);
+
+        // --- Decoraciones (caramelos) ---
+        var candyMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
+        var candyGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+
+        // Caramelos en la parte superior de la pared frontal
+        for (var i = -0.8; i <= 0.8; i += 0.4) {
+            var candy = new THREE.Mesh(candyGeometry, candyMaterial);
+            candy.position.set(i, 1, -1.05);
+            house.add(candy);
+        }
+
+        // --- Escalar la casa ---
+        house.scale.set(10, 5, 5);
+        house.position.set(0,6,10);
+        house.rotation.y += 3.1; // Rota alrededor del eje Y
+    house.rotation.x += 0.; // Opcional: Rota alrededor del eje X
+        
+
+        // Agregar la casa a la escena
+        scene.add(house);
+
+//Segunda CASA
+  ///Casa
+
+   // Material para la casa (marrón)
+   var gingerbreadMaterial = new THREE.MeshBasicMaterial({ color: 0xD2691E });
+        
+        // Material para el techo (rojo)
+        var roofMaterial = new THREE.MeshBasicMaterial({ color: 0x8B0000 });
+
+        // Grupo para la casa
+        var house = new THREE.Group();
+
+        // --- Pared frontal con puerta abierta ---
+        var frontWallShape = new THREE.Shape();
+        frontWallShape.moveTo(-1, 1); // Parte superior izquierda
+        frontWallShape.lineTo(-1, -1); // Parte inferior izquierda
+        frontWallShape.lineTo(-0.3, -1); // Lado izquierdo de la puerta
+        frontWallShape.lineTo(-0.3, 0); // Esquina superior izquierda de la puerta
+        frontWallShape.lineTo(0.3, 0); // Esquina superior derecha de la puerta
+        frontWallShape.lineTo(0.3, -1); // Lado derecho de la puerta
+        frontWallShape.lineTo(1, -1); // Parte inferior derecha
+        frontWallShape.lineTo(1, 1); // Parte superior derecha
+        frontWallShape.lineTo(-1, 1); // Cerrar forma
+
+        var frontWallGeometry = new THREE.ShapeGeometry(frontWallShape);
+        var frontWall = new THREE.Mesh(frontWallGeometry, gingerbreadMaterial);
+        frontWall.position.set(0, 0, -1);
+        house.add(frontWall);
+
+        // --- Pared trasera ---
+        var wallGeometry = new THREE.BoxGeometry(2, 2, 0.2);
+        var backWall = new THREE.Mesh(wallGeometry, gingerbreadMaterial);
+        backWall.position.set(0, 0, 1);
+        house.add(backWall);
+
+        // --- Paredes laterales ---
+        var sideWallGeometry = new THREE.BoxGeometry(0.2, 2, 2);
+        var leftWall = new THREE.Mesh(sideWallGeometry, gingerbreadMaterial);
+        leftWall.position.set(-1, 0, 0);
+        house.add(leftWall);
+
+        var rightWall = leftWall.clone();
+        rightWall.position.set(1, 0, 0);
+        house.add(rightWall);
+
+        // --- Techo ---
+        var roofGeometry = new THREE.ConeGeometry(1.5, 1, 4);
+        var roof = new THREE.Mesh(roofGeometry, roofMaterial);
+        roof.rotation.y = Math.PI / 4;
+        roof.position.set(0, 1, 0);
+        house.add(roof);
+
+        // --- Decoraciones (caramelos) ---
+        var candyMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
+        var candyGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+
+        // Caramelos en la parte superior de la pared frontal
+        for (var i = -0.8; i <= 0.8; i += 0.4) {
+            var candy = new THREE.Mesh(candyGeometry, candyMaterial);
+            candy.position.set(i, 1, -1.05);
+            house.add(candy);
+        }
+
+        // --- Escalar la casa ---
+        house.scale.set(15, 7, 7);
+        house.position.set(30,8,15);
+        house.rotation.y += 9; // Rota alrededor del eje Y
+        house.rotation.x += 0.; // Opcional: Rota alrededor del eje X
+        
+
+        // Agregar la casa a la escena
+        scene.add(house);
+     
+///Elementos_D
+
+ //muñequito 
+ var escenario02= Mu({x:0, y:0, z:10});
+    scene.add(escenario02);
+    escenario02.position.set(0,1,-0);
+   escenario02.scale.set(0.5,0.5,0.5);
+
+   var escenario02= Mu({x:0, y:0, z:10});
+    scene.add(escenario02);
+    escenario02.position.set(8,1,10);
+   escenario02.scale.set(0.15,0.15,0.15);
+   escenario02.rotation.set(0,-7,0);
+
+   var escenario13= Mu({x:0, y:0, z:10});
+    scene.add(escenario13);
+    escenario13.position.set(17,3,12);//35, y: 3, z: 23
+   escenario13.scale.set(0.15,0.15,0.15);
+   escenario13.rotation.set(0,1,0);
+
+//Sillon
+  
+var s=new THREE.BoxGeometry(4,5,5);
+    var material02=new THREE.MeshBasicMaterial({color:0x000000 ,wireframe:false});
+    var mesh02=new THREE.Mesh(s,material02);
+    scene.add(mesh02);
+    mesh02.scale.set(0.15,0.15,0.15);
+    mesh02.position.set(1,1,1);
+
+    var co=new THREE.CylinderGeometry(3,3,5,15);
+    var material03=new THREE.MeshBasicMaterial({color:0xc50000 ,wireframe:false});
+    var mesh03=new THREE.Mesh(co,material03);
+    scene.add(mesh03);
+    mesh03.position.set(0,2,0);
+    mesh03.scale.set(0.15,0.15,0.15);
+    mesh03.rotation.x=Math.PI * .5;
+    mesh03.rotation.z=Math.PI * .5;
+
+    var re=new THREE.CylinderGeometry(1.5,1.5,6,15);
+    var material04=new THREE.MeshBasicMaterial({color:0xc50000 ,wireframe:false});
+    var mesh04=new THREE.Mesh(re,material04);
+    scene.add(mesh04);
+    mesh04.scale.set(.15,.15,.15);
+    mesh04.position.set(10,3,12);
+    mesh04.rotation.x=Math.PI * .5;
+  
+
+    var re2=new THREE.CylinderGeometry(1.5,1.5,6,15);
+    var material05=new THREE.MeshBasicMaterial({color:0xc50000 ,wireframe:false});
+    var mesh05=new THREE.Mesh(re2,material05);
+    scene.add(mesh05);
+    mesh05.position.set(-3,5,0);
+    mesh05.rotation.x=Math.PI * .5;
+ 
+    var re3 = new RoundedBoxGeometry(5,8,1,6,2);
+var material06 = new THREE.MeshBasicMaterial({color:0xc50000});
+var mesh06 = new THREE.Mesh(re3,material06);
+mesh06.castShadow=true;
+scene.add(mesh06);
+mesh06.position.set(0,5,-3);
+
+//AGRUPANDO SILLON
+//agrupando casita 
+var Si= new THREE.Group();
+    Si.add(mesh02,mesh03,mesh04,mesh05,mesh06);
+    scene.add(Si);
+    Si.position.set(-20,0,-10);
+    Si.rotation.y=Math.PI * .25;
+
+    var Si1 = Si.clone();
+    scene.add(Si1);
+    Si1.position.set(20,0,-10);
+    Si1.rotation.y= Math.PI*-.1 ;
+
+///Estrella
+var geometry12=new THREE.OctahedronGeometry(8,0);
+    var material12=new THREE.MeshBasicMaterial({color:0xfffb00});
+    var mesh12=new THREE.Mesh(geometry12,material12);
+    scene.add(mesh12);
+    mesh12.position.set(9,19,-1);
+    mesh12.scale.set(0.3, 0.3, 0.3);
+
+///OtraNoche 
+
+var nocheBuenaGroup = new THREE.Group();
+
+// Esfera (Parte superior de un árbol)
+var geometrySphere = new THREE.SphereGeometry(2, 32, 32); 
+var materialSphere = new THREE.MeshBasicMaterial({ color: 0xfffb00}); 
+var sphere = new THREE.Mesh(geometrySphere, materialSphere);
+sphere.position.set(-20, 2, 0);
+sphere.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(sphere);
+
+// Cono (Base del árbol)
+var geometryCone = new THREE.ConeGeometry(2, 5, 32);  
+var materialCone = new THREE.MeshBasicMaterial({ color: 0xff0000});  
+var cone = new THREE.Mesh(geometryCone, materialCone);
+cone.rotation.x = Math.PI / 1; 
+cone.position.set(-20, -0.4, 0);
+cone.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(cone);
+
+// Clon de cono (para decoración adicional)
+var coneClone = cone.clone();  
+coneClone.rotation.x = Math.PI / 360;
+coneClone.position.set(-20, 4.5, 0);  
+coneClone.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(coneClone);
+
+// Más clones de cono con diferentes rotaciones y posiciones
+var coneClone01 = cone.clone();  
+coneClone01.rotation.z = 185 * (Math.PI / 42);
+coneClone01.position.set(-22, 1, 0); 
+coneClone01.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(coneClone01);
+
+var coneClone02 = cone.clone();
+coneClone02.rotation.z = 185 * (Math.PI / -42);
+coneClone02.position.set(-18, 1, 0); 
+coneClone02.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(coneClone02);
+
+var coneClone03 = cone.clone();
+coneClone03.rotation.z = 280 * (Math.PI / 200);
+coneClone03.position.set(-18, 3, 0); 
+coneClone03.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(coneClone03);
+
+var coneClone04 = cone.clone();
+coneClone04.rotation.z = 280 * (Math.PI / -200);
+coneClone04.position.set(-22, 3, 0); 
+coneClone04.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(coneClone04);
+
+// Cono adicional (más detalles)
+var geometryCone02 = new THREE.ConeGeometry(2, 7, 5);  
+var materialCone02 = new THREE.MeshBasicMaterial({ color: 0x0b5345 });  
+var cone02 = new THREE.Mesh(geometryCone02, materialCone02);
+cone02.rotation.z = 280 * (Math.PI / 150);
+cone02.position.set(-19, 4.5, -0.1);
+cone02.scale.set(0.7, 0.7, 0.4);
+nocheBuenaGroup.add(cone02);
+
+// Otro cono adicional (más detalles)
+var geometryCone03 = new THREE.ConeGeometry(2, 7, 5);  
+var materialCone03 = new THREE.MeshBasicMaterial({ color: 0x0b5345 });  
+var cone03 = new THREE.Mesh(geometryCone02, materialCone02);
+cone03.rotation.z = 185 * (Math.PI / -57);
+cone03.position.set(-21, 0, -0.1);
+cone03.scale.set(0.7, 0.7, 0.4);
+nocheBuenaGroup.add(cone03);
+
+// Agregar todo el grupo a la escena
+scene.add(nocheBuenaGroup);
+nocheBuenaGroup.scale.set(0.3, 0.3, 0.3);
+nocheBuenaGroup.position.set(13,6,7);
+
+/////////////////////////////////////
+//Segunda NBNA
+var nocheBuenaGroup = new THREE.Group();
+
+// Esfera (Parte superior de un árbol)
+var geometrySphere = new THREE.SphereGeometry(2, 32, 32); 
+var materialSphere = new THREE.MeshBasicMaterial({ color: 0xfffb00}); 
+var sphere = new THREE.Mesh(geometrySphere, materialSphere);
+sphere.position.set(-20, 2, 0);
+sphere.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(sphere);
+
+// Cono (Base del árbol)
+var geometryCone = new THREE.ConeGeometry(2, 5, 32);  
+var materialCone = new THREE.MeshBasicMaterial({ color: 0xff0000});  
+var cone = new THREE.Mesh(geometryCone, materialCone);
+cone.rotation.x = Math.PI / 1; 
+cone.position.set(-20, -0.4, 0);
+cone.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(cone);
+
+// Clon de cono (para decoración adicional)
+var coneClone = cone.clone();  
+coneClone.rotation.x = Math.PI / 360;
+coneClone.position.set(-20, 4.5, 0);  
+coneClone.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(coneClone);
+
+// Más clones de cono con diferentes rotaciones y posiciones
+var coneClone01 = cone.clone();  
+coneClone01.rotation.z = 185 * (Math.PI / 42);
+coneClone01.position.set(-22, 1, 0); 
+coneClone01.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(coneClone01);
+
+var coneClone02 = cone.clone();
+coneClone02.rotation.z = 185 * (Math.PI / -42);
+coneClone02.position.set(-18, 1, 0); 
+coneClone02.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(coneClone02);
+
+var coneClone03 = cone.clone();
+coneClone03.rotation.z = 280 * (Math.PI / 200);
+coneClone03.position.set(-18, 3, 0); 
+coneClone03.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(coneClone03);
+
+var coneClone04 = cone.clone();
+coneClone04.rotation.z = 280 * (Math.PI / -200);
+coneClone04.position.set(-22, 3, 0); 
+coneClone04.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(coneClone04);
+
+// Cono adicional (más detalles)
+var geometryCone02 = new THREE.ConeGeometry(2, 7, 5);  
+var materialCone02 = new THREE.MeshBasicMaterial({ color: 0x0b5345 });  
+var cone02 = new THREE.Mesh(geometryCone02, materialCone02);
+cone02.rotation.z = 280 * (Math.PI / 150);
+cone02.position.set(-19, 4.5, -0.1);
+cone02.scale.set(0.7, 0.7, 0.4);
+nocheBuenaGroup.add(cone02);
+
+// Otro cono adicional (más detalles)
+var geometryCone03 = new THREE.ConeGeometry(2, 7, 5);  
+var materialCone03 = new THREE.MeshBasicMaterial({ color: 0x0b5345 });  
+var cone03 = new THREE.Mesh(geometryCone02, materialCone02);
+cone03.rotation.z = 185 * (Math.PI / -57);
+cone03.position.set(-21, 0, -0.1);
+cone03.scale.set(0.7, 0.7, 0.4);
+nocheBuenaGroup.add(cone03);
+
+// Agregar todo el grupo a la escena
+scene.add(nocheBuenaGroup);
+nocheBuenaGroup.scale.set(0.3, 0.3, 0.3);
+nocheBuenaGroup.position.set(10,6,7);
+
+///////////////////////////////////////
+///3ra BNA
+var nocheBuenaGroup = new THREE.Group();
+
+// Esfera (Parte superior de un árbol)
+var geometrySphere = new THREE.SphereGeometry(2, 32, 32); 
+var materialSphere = new THREE.MeshBasicMaterial({ color: 0xfffb00}); 
+var sphere = new THREE.Mesh(geometrySphere, materialSphere);
+sphere.position.set(-20, 2, 0);
+sphere.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(sphere);
+
+// Cono (Base del árbol)
+var geometryCone = new THREE.ConeGeometry(2, 5, 32);  
+var materialCone = new THREE.MeshBasicMaterial({ color: 0xff0000});  
+var cone = new THREE.Mesh(geometryCone, materialCone);
+cone.rotation.x = Math.PI / 1; 
+cone.position.set(-20, -0.4, 0);
+cone.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(cone);
+
+// Clon de cono (para decoración adicional)
+var coneClone = cone.clone();  
+coneClone.rotation.x = Math.PI / 360;
+coneClone.position.set(-20, 4.5, 0);  
+coneClone.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(coneClone);
+
+// Más clones de cono con diferentes rotaciones y posiciones
+var coneClone01 = cone.clone();  
+coneClone01.rotation.z = 185 * (Math.PI / 42);
+coneClone01.position.set(-22, 1, 0); 
+coneClone01.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(coneClone01);
+
+var coneClone02 = cone.clone();
+coneClone02.rotation.z = 185 * (Math.PI / -42);
+coneClone02.position.set(-18, 1, 0); 
+coneClone02.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(coneClone02);
+
+var coneClone03 = cone.clone();
+coneClone03.rotation.z = 280 * (Math.PI / 200);
+coneClone03.position.set(-18, 3, 0); 
+coneClone03.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(coneClone03);
+
+var coneClone04 = cone.clone();
+coneClone04.rotation.z = 280 * (Math.PI / -200);
+coneClone04.position.set(-22, 3, 0); 
+coneClone04.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(coneClone04);
+
+// Cono adicional (más detalles)
+var geometryCone02 = new THREE.ConeGeometry(2, 7, 5);  
+var materialCone02 = new THREE.MeshBasicMaterial({ color: 0x0b5345 });  
+var cone02 = new THREE.Mesh(geometryCone02, materialCone02);
+cone02.rotation.z = 280 * (Math.PI / 150);
+cone02.position.set(-19, 4.5, -0.1);
+cone02.scale.set(0.7, 0.7, 0.4);
+nocheBuenaGroup.add(cone02);
+
+// Otro cono adicional (más detalles)
+var geometryCone03 = new THREE.ConeGeometry(2, 7, 5);  
+var materialCone03 = new THREE.MeshBasicMaterial({ color: 0x0b5345 });  
+var cone03 = new THREE.Mesh(geometryCone02, materialCone02);
+cone03.rotation.z = 185 * (Math.PI / -57);
+cone03.position.set(-21, 0, -0.1);
+cone03.scale.set(0.7, 0.7, 0.4);
+nocheBuenaGroup.add(cone03);
+
+// Agregar todo el grupo a la escena
+scene.add(nocheBuenaGroup);
+nocheBuenaGroup.scale.set(0.3, 0.3, 0.3);
+nocheBuenaGroup.position.set(7,6,7);
+
+///////////////////////////////////////
+///4ta BNA
+var nocheBuenaGroup = new THREE.Group();
+
+// Esfera (Parte superior de un árbol)
+var geometrySphere = new THREE.SphereGeometry(2, 32, 32); 
+var materialSphere = new THREE.MeshBasicMaterial({ color: 0xfffb00}); 
+var sphere = new THREE.Mesh(geometrySphere, materialSphere);
+sphere.position.set(-20, 2, 0);
+sphere.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(sphere);
+
+// Cono (Base del árbol)
+var geometryCone = new THREE.ConeGeometry(2, 5, 32);  
+var materialCone = new THREE.MeshBasicMaterial({ color: 0xff0000});  
+var cone = new THREE.Mesh(geometryCone, materialCone);
+cone.rotation.x = Math.PI / 1; 
+cone.position.set(-20, -0.4, 0);
+cone.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(cone);
+
+// Clon de cono (para decoración adicional)
+var coneClone = cone.clone();  
+coneClone.rotation.x = Math.PI / 360;
+coneClone.position.set(-20, 4.5, 0);  
+coneClone.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(coneClone);
+
+// Más clones de cono con diferentes rotaciones y posiciones
+var coneClone01 = cone.clone();  
+coneClone01.rotation.z = 185 * (Math.PI / 42);
+coneClone01.position.set(-22, 1, 0); 
+coneClone01.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(coneClone01);
+
+var coneClone02 = cone.clone();
+coneClone02.rotation.z = 185 * (Math.PI / -42);
+coneClone02.position.set(-18, 1, 0); 
+coneClone02.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(coneClone02);
+
+var coneClone03 = cone.clone();
+coneClone03.rotation.z = 280 * (Math.PI / 200);
+coneClone03.position.set(-18, 3, 0); 
+coneClone03.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(coneClone03);
+
+var coneClone04 = cone.clone();
+coneClone04.rotation.z = 280 * (Math.PI / -200);
+coneClone04.position.set(-22, 3, 0); 
+coneClone04.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(coneClone04);
+
+// Cono adicional (más detalles)
+var geometryCone02 = new THREE.ConeGeometry(2, 7, 5);  
+var materialCone02 = new THREE.MeshBasicMaterial({ color: 0x0b5345 });  
+var cone02 = new THREE.Mesh(geometryCone02, materialCone02);
+cone02.rotation.z = 280 * (Math.PI / 150);
+cone02.position.set(-19, 4.5, -0.1);
+cone02.scale.set(0.7, 0.7, 0.4);
+nocheBuenaGroup.add(cone02);
+
+// Otro cono adicional (más detalles)
+var geometryCone03 = new THREE.ConeGeometry(2, 7, 5);  
+var materialCone03 = new THREE.MeshBasicMaterial({ color: 0x0b5345 });  
+var cone03 = new THREE.Mesh(geometryCone02, materialCone02);
+cone03.rotation.z = 185 * (Math.PI / -57);
+cone03.position.set(-21, 0, -0.1);
+cone03.scale.set(0.7, 0.7, 0.4);
+nocheBuenaGroup.add(cone03);
+
+// Agregar todo el grupo a la escena
+scene.add(nocheBuenaGroup);
+nocheBuenaGroup.scale.set(0.3, 0.3, 0.3);
+nocheBuenaGroup.position.set(4,6,7);
+
+///////////////////////////////////////
+///5ta BNA
+var nocheBuenaGroup = new THREE.Group();
+
+// Esfera (Parte superior de un árbol)
+var geometrySphere = new THREE.SphereGeometry(2, 32, 32); 
+var materialSphere = new THREE.MeshBasicMaterial({ color: 0xfffb00}); 
+var sphere = new THREE.Mesh(geometrySphere, materialSphere);
+sphere.position.set(-20, 2, 0);
+sphere.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(sphere);
+
+// Cono (Base del árbol)
+var geometryCone = new THREE.ConeGeometry(2, 5, 32);  
+var materialCone = new THREE.MeshBasicMaterial({ color: 0xff0000});  
+var cone = new THREE.Mesh(geometryCone, materialCone);
+cone.rotation.x = Math.PI / 1; 
+cone.position.set(-20, -0.4, 0);
+cone.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(cone);
+
+// Clon de cono (para decoración adicional)
+var coneClone = cone.clone();  
+coneClone.rotation.x = Math.PI / 360;
+coneClone.position.set(-20, 4.5, 0);  
+coneClone.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(coneClone);
+
+// Más clones de cono con diferentes rotaciones y posiciones
+var coneClone01 = cone.clone();  
+coneClone01.rotation.z = 185 * (Math.PI / 42);
+coneClone01.position.set(-22, 1, 0); 
+coneClone01.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(coneClone01);
+
+var coneClone02 = cone.clone();
+coneClone02.rotation.z = 185 * (Math.PI / -42);
+coneClone02.position.set(-18, 1, 0); 
+coneClone02.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(coneClone02);
+
+var coneClone03 = cone.clone();
+coneClone03.rotation.z = 280 * (Math.PI / 200);
+coneClone03.position.set(-18, 3, 0); 
+coneClone03.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(coneClone03);
+
+var coneClone04 = cone.clone();
+coneClone04.rotation.z = 280 * (Math.PI / -200);
+coneClone04.position.set(-22, 3, 0); 
+coneClone04.scale.set(0.6, 0.6, 0.6);
+nocheBuenaGroup.add(coneClone04);
+
+// Cono adicional (más detalles)
+var geometryCone02 = new THREE.ConeGeometry(2, 7, 5);  
+var materialCone02 = new THREE.MeshBasicMaterial({ color: 0x0b5345 });  
+var cone02 = new THREE.Mesh(geometryCone02, materialCone02);
+cone02.rotation.z = 280 * (Math.PI / 150);
+cone02.position.set(-19, 4.5, -0.1);
+cone02.scale.set(0.7, 0.7, 0.4);
+nocheBuenaGroup.add(cone02);
+
+// Otro cono adicional (más detalles)
+var geometryCone03 = new THREE.ConeGeometry(2, 7, 5);  
+var materialCone03 = new THREE.MeshBasicMaterial({ color: 0x0b5345 });  
+var cone03 = new THREE.Mesh(geometryCone02, materialCone02);
+cone03.rotation.z = 185 * (Math.PI / -57);
+cone03.position.set(-21, 0, -0.1);
+cone03.scale.set(0.7, 0.7, 0.4);
+nocheBuenaGroup.add(cone03);
+
+// Agregar todo el grupo a la escena
+scene.add(nocheBuenaGroup);
+nocheBuenaGroup.scale.set(0.3, 0.3, 0.3);
+nocheBuenaGroup.position.set(1,6,7);
+
+//////////////////////////////////////////
+/////////////////////////////////////////
+
+
+///GrupoGorro
+var group = new THREE.Group();
+
+// Crear un ejemplo de geometría (puede ser cualquier elemento)
+var boxGeometry = new THREE.BoxGeometry(1, 1, 1);
+var boxMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+var box = new THREE.Mesh(boxGeometry, boxMaterial);
+
+// Añadir la caja al grupo
+group.add(box);
+
+// Agregar el grupo a la escena
+scene.add(group);
+group.position.set(2,2,1);
+group.scale.set(0.3, 0.3, 0.3);
+
+///OTROOOOPrueba 
+import craneoGroup1 from "./js/reg1.js"
+var reg1 = craneoGroup1({x:0,y:0,z:0});
+scene.add(reg1);
+reg1.position.set(-8.5,0,16);
+reg1.scale.set(0.3, 0.3, 0.3);
+
+///Regalo2
+import craneoGroup2 from "./js/reg2.js"
+var reg2 = craneoGroup2({x:0,y:0,z:0});
+scene.add(reg2);
+reg2.position.set(-5,1,14);
+reg2.scale.set(0.3, 0.3, 0.3);
+
+///Regalo3
+import craneoGroup3 from "./js/reg3.js"
+var reg3 = craneoGroup3({x:0,y:0,z:0});
+scene.add(reg3);
+reg3.position.set(-7,.5,15);
+reg3.scale.set(0.3, 0.3, 0.3);
+
+///Regalo4
+import craneoGroup from "./js/reg3.js"
+var reg3 = craneoGroup3({x:0,y:0,z:0});
+scene.add(reg3);
+reg3.position.set(-4,.5,11);
+reg3.scale.set(0.3, 0.3, 0.3);
+
+import craneoGroup5 from "./js/reg1.js"
+var reg1 = craneoGroup1({x:0,y:0,z:0});
+scene.add(reg1);
+reg1.position.set(-7.5,0,11);
+reg1.scale.set(0.3, 0.3, 0.3);
+
+//////////////////////////
+
+//////////////////////////////////////////////////////
+///Esferas
+//Segunda NBNA
+var nocheBuenaGroup = new THREE.Group();
+// Crear un grupo para las esferas y los toros
+var esferas = new THREE.Group();
+
+// Materiales
+var materialRed = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+var materialGreen = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+var materialGold = new THREE.MeshStandardMaterial({ color: 0xffd700 });
+var materialBlue = new THREE.MeshStandardMaterial({ color: 0x0000ff });
+
+// Crear la geometría de las esferas
+var geometry = new THREE.SphereGeometry(2, 16, 16);
+
+// Esferas
+var sphereRed = new THREE.Mesh(geometry, materialRed);
+sphereRed.position.set(15, 5, 0);
+esferas.add(sphereRed);
+
+var sphereGreen = new THREE.Mesh(geometry, materialGreen);
+sphereGreen.position.set(20, 5, 0);
+esferas.add(sphereGreen);
+
+var sphereGold = new THREE.Mesh(geometry, materialGold);
+sphereGold.position.set(25, 5, 0);
+esferas.add(sphereGold);
+
+var sphereBlue = new THREE.Mesh(geometry, materialBlue);
+sphereBlue.position.set(30, 5, 0);
+esferas.add(sphereBlue);
+
+// Crear la geometría para los toros
+var geometry05 = new THREE.TorusGeometry(2, 1, 10, 10);
+var material05 = new THREE.MeshBasicMaterial({ color: 0xebebeb });
+
+// Toros
+var mesh05 = new THREE.Mesh(geometry05, material05);
+mesh05.position.set(15, 6.5, 0);
+mesh05.scale.set(0.4, 0.5, 0.3);
+esferas.add(mesh05);
+
+var mesh05Clone1 = mesh05.clone();
+mesh05Clone1.position.set(25, 6.5, 0);
+mesh05Clone1.scale.set(0.5, 0.5, 0.5);
+esferas.add(mesh05Clone1);
+
+var mesh05Clone2 = mesh05.clone();
+mesh05Clone2.position.set(20, 6.5, 0);
+mesh05Clone2.scale.set(0.5, 0.5, 0.5);
+esferas.add(mesh05Clone2);
+
+var mesh05Clone3 = mesh05.clone();
+mesh05Clone3.position.set(30, 6.5, 0);
+mesh05Clone3.scale.set(0.5, 0.5, 0.5);
+esferas.add(mesh05Clone3);
+
+// agregar el grupo a la escena
+scene.add(esferas);
+esferas.position.set(-13,6,14);
+esferas.scale.set(0.3, 0.3, 0.3);
+
+//////////////////////////////////////////////////////
+///Esferas
+
+// Crear un grupo para las esferas y los toros
+var esferas = new THREE.Group();
+
+// Materiales
+var materialRed = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+var materialGreen = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+var materialGold = new THREE.MeshStandardMaterial({ color: 0xffd700 });
+var materialBlue = new THREE.MeshStandardMaterial({ color: 0x0000ff });
+
+// Crear la geometría de las esferas
+var geometry = new THREE.SphereGeometry(2, 16, 16);
+
+// Esferas
+var sphereRed = new THREE.Mesh(geometry, materialRed);
+sphereRed.position.set(15, 5, 0);
+esferas.add(sphereRed);
+
+var sphereGreen = new THREE.Mesh(geometry, materialGreen);
+sphereGreen.position.set(20, 5, 0);
+esferas.add(sphereGreen);
+
+var sphereGold = new THREE.Mesh(geometry, materialGold);
+sphereGold.position.set(25, 5, 0);
+esferas.add(sphereGold);
+
+var sphereBlue = new THREE.Mesh(geometry, materialBlue);
+sphereBlue.position.set(30, 5, 0);
+esferas.add(sphereBlue);
+
+// Crear la geometría para los toros
+var geometry05 = new THREE.TorusGeometry(2, 1, 10, 10);
+var material05 = new THREE.MeshBasicMaterial({ color: 0xebebeb });
+
+// Toros
+var mesh05 = new THREE.Mesh(geometry05, material05);
+mesh05.position.set(15, 6.5, 0);
+mesh05.scale.set(0.4, 0.5, 0.3);
+esferas.add(mesh05);
+
+var mesh05Clone1 = mesh05.clone();
+mesh05Clone1.position.set(25, 6.5, 0);
+mesh05Clone1.scale.set(0.5, 0.5, 0.5);
+esferas.add(mesh05Clone1);
+
+var mesh05Clone2 = mesh05.clone();
+mesh05Clone2.position.set(20, 6.5, 0);
+mesh05Clone2.scale.set(0.5, 0.5, 0.5);
+esferas.add(mesh05Clone2);
+
+var mesh05Clone3 = mesh05.clone();
+mesh05Clone3.position.set(30, 6.5, 0);
+mesh05Clone3.scale.set(0.5, 0.5, 0.5);
+esferas.add(mesh05Clone3);
+
+// agregar el grupo a la escena
+scene.add(esferas);
+esferas.position.set(-7,6,14);
+esferas.scale.set(0.3, 0.3, 0.3);
+
+/////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
+///Esferas
+
+// Crear un grupo para las esferas y los toros
+var esferas = new THREE.Group();
+
+// Materiales
+var materialRed = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+var materialGreen = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+var materialGold = new THREE.MeshStandardMaterial({ color: 0xffd700 });
+var materialBlue = new THREE.MeshStandardMaterial({ color: 0x0000ff });
+
+// Crear la geometría de las esferas
+var geometry = new THREE.SphereGeometry(2, 16, 16);
+
+// Esferas
+var sphereRed = new THREE.Mesh(geometry, materialRed);
+sphereRed.position.set(15, 5, 0);
+esferas.add(sphereRed);
+
+var sphereGreen = new THREE.Mesh(geometry, materialGreen);
+sphereGreen.position.set(20, 5, 0);
+esferas.add(sphereGreen);
+
+var sphereGold = new THREE.Mesh(geometry, materialGold);
+sphereGold.position.set(25, 5, 0);
+esferas.add(sphereGold);
+
+var sphereBlue = new THREE.Mesh(geometry, materialBlue);
+sphereBlue.position.set(30, 5, 0);
+esferas.add(sphereBlue);
+
+// Crear la geometría 
+var geometry05 = new THREE.TorusGeometry(2, 1, 10, 10);
+var material05 = new THREE.MeshBasicMaterial({ color: 0xebebeb });
+
+// Toros
+var mesh05 = new THREE.Mesh(geometry05, material05);
+mesh05.position.set(15, 6.5, 0);
+mesh05.scale.set(0.4, 0.5, 0.3);
+esferas.add(mesh05);
+
+var mesh05Clone1 = mesh05.clone();
+mesh05Clone1.position.set(25, 6.5, 0);
+mesh05Clone1.scale.set(0.5, 0.5, 0.5);
+esferas.add(mesh05Clone1);
+
+var mesh05Clone2 = mesh05.clone();
+mesh05Clone2.position.set(20, 6.5, 0);
+mesh05Clone2.scale.set(0.5, 0.5, 0.5);
+esferas.add(mesh05Clone2);
+
+var mesh05Clone3 = mesh05.clone();
+mesh05Clone3.position.set(30, 6.5, 0);
+mesh05Clone3.scale.set(0.5, 0.5, 0.5);
+esferas.add(mesh05Clone3);
+
+//  agregar el grupo a la escena
+scene.add(esferas);
+esferas.position.set(-1,6,14);
+esferas.scale.set(0.3, 0.3, 0.3);
+
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+//Casa2DAAA
+
+   //BASE
+   var geometry= new THREE.BoxGeometry(50,0.1,60);
+     var material= new THREE.MeshBasicMaterial({color:0xbdbdbd });
+     var mesh01= new THREE.Mesh(geometry,material);
+     mesh01.receiveShadow=true;
+     scene.add(mesh01);
+     mesh01.position.set(0,0,-10);
+ 
+     //
+    var loader= new THREE.TextureLoader();
+    var bgTexture= loader.load('./images/1.jpg');
+    scene.background=bgTexture;
+
+    //BASE2
+   var geometry51= new THREE.BoxGeometry(200,0.5,200);
+
+     var material51= new THREE.MeshBasicMaterial({color:0xffffff });
+     var mesh51= new THREE.Mesh(geometry51,material51);
+     mesh51.receiveShadow=true;
+     scene.add(mesh51);
+     mesh51.position.set(0,-1,-10);
+ 
+     //
+    var loader= new THREE.TextureLoader();
+    var bgTexture= loader.load('./images/1.jpg');
+    scene.background=bgTexture;
+ 
+ 
+    //pared
+
+    //PARED1
+    var geometry= new THREE.BoxGeometry(50,20,1);
+    
+    var material= new THREE.MeshBasicMaterial({color:0x4b3621 });
+    var mesh= new THREE.Mesh(geometry,material);
+    scene.add(mesh);
+    mesh.position.set(0,10,-40);
+    mesh.castShadow = true ;
+    //PARED2
+    //PARED2
+    var geometry1= new THREE.BoxGeometry(50,20,1);
+    var material1= new THREE.MeshBasicMaterial({color:0x4b3621 });
+ 
+    var mesh1= new THREE.Mesh(geometry1,material1);
+    scene.add(mesh1);
+    mesh1.position.set(0,10,20);
+    mesh.castShadow = true ;
+    //PARED3
+    var geometry2= new THREE.BoxGeometry(1,20,60);
+   
+    var material2= new THREE.MeshBasicMaterial({color:0x4b3621 });
+    
+
+ 
+    var mesh2= new THREE.Mesh(geometry2,material2);
+    scene.add(mesh2);
+    mesh2.position.set(25,10,-10);
+    mesh.castShadow = true
+     
+
+//PARED4
+var geometry3= new THREE.BoxGeometry(1,20,20);
+    var material3= new THREE.MeshBasicMaterial({color:0x4b3621 });
+var mesh3= new THREE.Mesh(geometry2,material3);
+    scene.add(mesh3);
+    mesh3.position.set(-25,10,-10);
+  
+//techo 
+var geometryTecho = new THREE.CylinderGeometry(10, 40, 11.5, 32); 
+var materialTecho = new THREE.MeshBasicMaterial({ color: 0x842400 });
+var techo = new THREE.Mesh(geometryTecho, materialTecho);
+scene.add(techo);
+techo.position.set(0, 25, -10);  
+
+
+
+    //puerta
+    var pu= new THREE.BoxGeometry(10,17,2);
+    var texture8= new THREE.TextureLoader().load("./images/do.jpg");
+    var material8= new THREE.MeshLambertMaterial({
+    map:texture8,
+    shading: THREE.FlatShading
+    });
+    var mesh8= new THREE.Mesh(pu,material8);
+    scene.add(mesh8);
+    mesh8.position.set(0,10,20);
+    mesh8.castShadow = true ;
+
+    //cuadros
+    var v1= new THREE.BoxGeometry(2,10,10);
+    var texture4= new THREE.TextureLoader().load("./images/pf.jpg");
+    var material4= new THREE.MeshLambertMaterial({
+    map:texture4,
+    shading: THREE.FlatShading
+    });
+    var mesh4= new THREE.Mesh(v1,material4);
+    scene.add(mesh4);
+    mesh4.position.set(24,10,0);
+    mesh4.castShadow = true ;
+
+    var v2= new THREE.BoxGeometry(2,10,10);
+    var texture6= new THREE.TextureLoader().load("./images/gobo.jpg");
+    var material6= new THREE.MeshLambertMaterial({
+    map:texture6,
+    shading: THREE.FlatShading
+    });
+    var mesh6= new THREE.Mesh(v2,material6);
+    scene.add(mesh6);
+    mesh6.position.set(-24,10,0);
+    mesh6.castShadow = true ;
+
+    //ventanas
+    var v91= new THREE.BoxGeometry(10,10,2);
+    var texture91= new THREE.TextureLoader().load("./images/ven.jpg");
+    var material91= new THREE.MeshLambertMaterial({
+    map:texture91,
+    shading: THREE.FlatShading
+    });
+    var mesh91= new THREE.Mesh(v91,material91);
+    scene.add(mesh91);
+    mesh91.position.set(-15,10,20);
+    mesh91.castShadow = true ;
+
+    var v92= new THREE.BoxGeometry(10,10,2);
+    var texture92= new THREE.TextureLoader().load("./images/ven.jpg");
+    var material92= new THREE.MeshLambertMaterial({
+    map:texture92,
+    shading: THREE.FlatShading
+    });
+    var mesh92= new THREE.Mesh(v91,material91);
+    scene.add(mesh92);
+    mesh92.position.set(15,10,20);
+    mesh92.castShadow = true ;
+
+    var v93= new THREE.BoxGeometry(10,10,2);
+    var texture93= new THREE.TextureLoader().load("./images/ven.jpg");
+    var material93= new THREE.MeshLambertMaterial({
+    map:texture93,
+    shading: THREE.FlatShading
+    });
+    var mesh93= new THREE.Mesh(v93,material93);
+    scene.add(mesh93);
+    mesh93.position.set(15,10,-40);
+    mesh93.castShadow = true ;
+
+    var v94= new THREE.BoxGeometry(10,10,2);
+    var texture94= new THREE.TextureLoader().load("./images/ven.jpg");
+    var material94= new THREE.MeshLambertMaterial({
+    map:texture94,
+    shading: THREE.FlatShading
+    });
+    var mesh94= new THREE.Mesh(v94,material94);
+    scene.add(mesh94);
+    mesh94.position.set(-15,10,-40);
+    mesh94.castShadow = true ;
+    //SILLONCITO
+
+var s=new THREE.BoxGeometry(4,5,5);
+    var material65=new THREE.MeshBasicMaterial({color:0x000000 ,wireframe:false});
+    var mesh65=new THREE.Mesh(s,material65);
+    scene.add(mesh65);
+    mesh65.position.set(0,1,0);
+
+    var co=new THREE.CylinderGeometry(3,3,5,15);
+    var material64=new THREE.MeshBasicMaterial({color:0xc50000 ,wireframe:false});
+    var mesh64=new THREE.Mesh(co,material64);
+    scene.add(mesh64);
+    mesh64.position.set(0,2,0);
+    mesh64.rotation.x=Math.PI * .5;
+    mesh64.rotation.z=Math.PI * .5;
+
+    var re=new THREE.CylinderGeometry(1.5,1.5,6,15);
+    var material63=new THREE.MeshBasicMaterial({color:0xc50000 ,wireframe:false});
+    var mesh63=new THREE.Mesh(re,material63);
+    scene.add(mesh63);
+    mesh63.position.set(3,5,0);
+    mesh63.rotation.x=Math.PI * .5;
+  
+
+    var re2=new THREE.CylinderGeometry(1.5,1.5,6,15);
+    var material62=new THREE.MeshBasicMaterial({color:0xc50000 ,wireframe:false});
+    var mesh62=new THREE.Mesh(re2,material62);
+    scene.add(mesh62);
+    mesh62.position.set(-3,5,0);
+    mesh62.rotation.x=Math.PI * .5;
+ 
+    var re3 = new RoundedBoxGeometry(5,8,1,6,2);
+var material61 = new THREE.MeshBasicMaterial({color:0xc50000});
+var mesh61 = new THREE.Mesh(re3,material61);
+mesh61.castShadow=true;
+scene.add(mesh61);
+mesh61.position.set(0,5,-3);
+
+//AGRUPANDO SILLON
+
+var Si= new THREE.Group();
+    Si.add(mesh61,mesh62,mesh63,mesh64,mesh65);
+    scene.add(Si);
+    Si.position.set(0,0,20);
+    Si.rotation.y=Math.PI * .25;
+
+
+//elementos
+
+ //arbol
+ var escenario03= ar({x:0, y:0, z:10});
+    scene.add(escenario03);
+    escenario03.position.set(0,-13.5,-30);
+    escenario03.scale.set(3,3,3);
+    escenario03.rotation.set(0,0,0);
+    var pointLight = new THREE.PointLight(0xffffff, 0.5);
+pointLight.position.set(10, 10, 10);
+scene.add(pointLight);
+
+    //// Estrella
+var geometry81=new THREE.OctahedronGeometry(8,0);
+    var material81=new THREE.MeshBasicMaterial({color:0xfffb00});
+    var mesh81=new THREE.Mesh(geometry81,material81);
+    scene.add(mesh81);
+    mesh81.position.set(0,60,0);
+    mesh81.scale.set(0.5, 0.5, 0.5);
+    var pointLight2 = new THREE.PointLight(0xffffff, 0.05);
+pointLight2.position.set(0, 60, 0);
+scene.add(pointLight2);
+
+
+
+    //regalos
+    var escenario09= ESC2({x:0, y:0, z:10});
+    scene.add(escenario09);
+    escenario09.position.set(-2,0.25,-20);
+    escenario09.scale.set(1,1,1);
+
+    var escenario091= ESC2({x:0, y:0, z:10});
+    scene.add(escenario091);
+    escenario091.position.set(-10,0.25,-25);
+    escenario091.scale.set(1,1,1);
+
+    var escenario11= ESC3({x:0, y:0, z:10});
+    scene.add(escenario11);
+    escenario11.position.set(-5,0,-23);
+    escenario11.rotation.set(0,0,0);
+    escenario11.scale.set(1,1,1);
+
+    var escenario111= ESC3({x:0, y:0, z:10});
+    scene.add(escenario111);
+    escenario111.position.set(10,0,-25);
+    escenario111.rotation.set(0,0,0);
+    escenario111.scale.set(1,1,1);
+
+    var escenario08= ESC1({x:0, y:0, z:10});
+    scene.add(escenario08);
+    escenario08.position.set(4,-4,-20);
+    escenario08.scale.set(0.75,0.75,0.75);
+
+    
+    var escenario081= ESC1({x:0, y:0, z:10});
+    scene.add(escenario081);
+    escenario081.position.set(12,-2,-32);
+    escenario081.scale.set(0.75,0.75,0.75);
+
+    //muñequito
+    var escenario14= Mu({x:0, y:0, z:10});
+    scene.add(escenario14);
+    escenario14.position.set(-15,1,-32);
+   escenario14.scale.set(1,1,1);
+
+//estferas
+    var escenario07= sf({x:0, y:0, z:10});
+    scene.add(escenario07);
+    escenario07.position.set(-29.5,16,-39);
+    escenario07.scale.set(0.5,0.5,0.5);
+    
+    var escenario071= sf({x:0, y:0, z:10});
+    scene.add(escenario071);
+    escenario071.position.set(-19.5,16,-39);
+    escenario071.scale.set(0.5,0.5,0.5);
+
+    var escenario072= sf({x:0, y:0, z:10});
+    scene.add(escenario072);
+    escenario072.position.set(-10,16,-39);
+    escenario072.scale.set(0.5,0.5,0.5);
+   
+    var escenario073= sf({x:0, y:0, z:10});
+    scene.add(escenario073);
+    escenario073.position.set(0,16,-39);
+    escenario073.scale.set(0.5,0.5,0.5);
+
+    var escenario074= sf({x:0, y:0, z:10});
+    scene.add(escenario074);
+    escenario074.position.set(10,16,-39);
+    escenario074.scale.set(0.5,0.5,0.5);
+
+   /// Gorro 
+var geometryCone = new THREE.ConeGeometry(3, 5, 32);  
+var materialCone = new THREE.MeshBasicMaterial({ color: 0xff0000 });  
+var cone = new THREE.Mesh(geometryCone, materialCone);
+scene.add(cone);
+cone.position.set(-10, 2, 30); 
+
+
+var geometryBase = new THREE.CylinderGeometry(3.5, 3.5, 1, 32); 
+var materialBase = new THREE.MeshBasicMaterial({ color: 0xffffff });
+var base = new THREE.Mesh(geometryBase, materialBase);
+scene.add(base);
+base.position.set(-10, 0, 30);  
+
+var geometryPompon = new THREE.SphereGeometry(1, 16, 16);
+var materialPompon = new THREE.MeshBasicMaterial({ color: 0xffffff }); 
+var pompon = new THREE.Mesh(geometryPompon, materialPompon);
+scene.add(pompon);
+pompon.position.set(-10, 5, 30);  
+
+
+cone.scale.set(1, 1, 1);
+base.scale.set(1, 1, 1);
+pompon.scale.set(1, 1, 1);
+
+
+//Agrupando todo
+var c= new THREE.Group();
+    c.add(techo,pu,cone,pompon,base,mesh,mesh01,mesh1,mesh2,mesh3,mesh4,mesh8,mesh51,mesh6,mesh61,mesh62,mesh63,mesh64,mesh65,mesh81,mesh91,mesh92,mesh93,mesh94,pointLight,pointLight2,escenario03,escenario07,escenario071,escenario072,escenario073,escenario074,escenario08,escenario081,escenario09,escenario091,escenario11,escenario111,escenario14,);
+    scene.add(c);
+    c.scale.set(.30, .30, .30);
+    c.position.set(-24, 1, 15); 
+
+
+    //SOMBRA
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
+ 
+    var light2 = new THREE.DirectionalLight(0xffffff, 0.5);
+    light2.position.set(0, 20, 50);
+    light2.target.position.set(0, 0, 0);
+
+    var light2 = new THREE.DirectionalLight(0xffffff, 0.5);
+    light2.position.set(-25, 5, 50);
+    light2.target.position.set(0, 0, 0);
+
+    var light4 = new THREE.DirectionalLight(0xffffff, 0.5);
+    light4.position.set(0, 5, -50);
+    light4.target.position.set(0, 0, 0);
+
+    var light5 = new THREE.DirectionalLight(0xffffff, 0.5);
+    light5.position.set(0,8,0);
+    light5.target.position.set(0, 0, 0);
+ 
+    light2.castShadow = true;
+    light2.shadow.bias = 0.01;
+    light2.shadow.mapSize.width = 1024;
+    light2.shadow.mapSize.heigth = 1024;
+ 
+    light2.shadow.camera.top = 25;
+    light2.shadow.camera.bottom = -25;
+    light2.shadow.camera.left = -50;
+    light2.shadow.camera.right = 50;
+    light2.shadow.camera.visible = true;
+
+    light4.castShadow = true;
+    light4.shadow.bias = 0.01;
+    light4.shadow.mapSize.width = 1024;
+    light4.shadow.mapSize.heigth = 1024;
+ 
+    light4.shadow.camera.top = 25;
+    light4.shadow.camera.bottom = -25;
+    light4.shadow.camera.left = -50;
+    light4.shadow.camera.right = 50;
+    light4.shadow.camera.visible = true;
+    scene.add(light4);
+
+    light5.castShadow = true;
+    light5.shadow.bias = 0.01;
+    light5.shadow.mapSize.width = 1024;
+    light5.shadow.mapSize.heigth = 1024;
+ 
+    light5.shadow.camera.top = 25;
+    light5.shadow.camera.bottom = -25;
+    light5.shadow.camera.left = -50;
+    light5.shadow.camera.right = 50;
+    light5.shadow.camera.visible = true;
+    scene.add(light5);
+    scene.add(light2);
+
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+//Tercer CASAAAAAA
+var plano = new THREE.PlaneGeometry(100, 100);
+var material01 = new THREE.MeshLambertMaterial({ color: 0xcdc6ff, side: THREE.DoubleSide });
+var mesh = new THREE.Mesh(plano, material01);
+mesh.receiveShadow = true;
+
+mesh.position.set(0, -1, 0);
+mesh.rotation.set(1.57, 0, 0);
+
+// Luces
+var light1 = new THREE.DirectionalLight(0xffffff, 0.5);
+light1.position.set(0, 5, 0);
+light1.target.position.set(0, 0, 0);
+
+var light2 = new THREE.DirectionalLight(0xffffff, 0.5);
+light2.position.set(-25, 5, 0);
+light2.target.position.set(0, 0, 0);
+
+var light3 = new THREE.DirectionalLight(0xffffff, 0.5);
+light3.position.set(25, 5, 0);
+light3.target.position.set(0, 0, 0);
+
+light1.castShadow = true;
+light2.castShadow = true;
+light3.castShadow = true;
+light1.shadow.bias = 0.01;
+light2.shadow.bias = 0.01;
+light3.shadow.bias = 0.01;
+
+light1.shadow.mapSize.width = 1024;
+light1.shadow.mapSize.height = 1024;
+light2.shadow.mapSize.width = 1024;
+light2.shadow.mapSize.height = 1024;
+light3.shadow.mapSize.width = 1024;
+light3.shadow.mapSize.height = 1024;
+
+light1.shadow.camera.top = 25;
+light1.shadow.camera.bottom = -25;
+light1.shadow.camera.left = -50;
+light1.shadow.camera.right = 50;
+light1.shadow.camera.visible = true;
+
+// Base
+var geometry = new THREE.BoxGeometry(100, 0.1, 100);
+var texture = new THREE.TextureLoader().load("./images/st.jpg");
+var material = new THREE.MeshLambertMaterial({ map: texture, shading: THREE.FlatShading });
+var mesh01 = new THREE.Mesh(geometry, material);
+mesh01.receiveShadow = true;
+
+// Añadir a la escena
+mesh01.position.set(0, 0, 0);
+
+// Agrupando todos los elementos de la casa en el grupo "casaD"
+var casaD = new THREE.Group();
+
+// Paredes
+var geometryPared1 = new THREE.BoxGeometry(50, 20, 1);
+var texturePared1 = new THREE.TextureLoader().load("./images/mad.jpg");
+var materialPared1 = new THREE.MeshLambertMaterial({ map: texturePared1, shading: THREE.FlatShading });
+var meshPared1 = new THREE.Mesh(geometryPared1, materialPared1);
+meshPared1.position.set(0, 10, 50);
+meshPared1.castShadow = true;
+casaD.add(meshPared1);
+
+var geometryPared2 = new THREE.BoxGeometry(50, 20, 1);
+var texturePared2 = new THREE.TextureLoader().load("./images/mad.jpg");
+var materialPared2 = new THREE.MeshLambertMaterial({ map: texturePared2, shading: THREE.FlatShading });
+var meshPared2 = new THREE.Mesh(geometryPared2, materialPared2);
+meshPared2.position.set(0, 10, -50);
+meshPared2.castShadow = true;
+casaD.add(meshPared2);
+
+// Paredes laterales
+var geometryPared3 = new THREE.BoxGeometry(1, 20, 100);
+var texturePared3 = new THREE.TextureLoader().load("./images/mad.jpg");
+var materialPared3 = new THREE.MeshLambertMaterial({ map: texturePared3, shading: THREE.FlatShading });
+var meshPared3 = new THREE.Mesh(geometryPared3, materialPared3);
+meshPared3.position.set(25, 10, 0);
+meshPared3.castShadow = true;
+casaD.add(meshPared3);
+
+var geometryPared4 = new THREE.BoxGeometry(1, 20, 100);
+var texturePared4 = new THREE.TextureLoader().load("./images/mad.jpg");
+var materialPared4 = new THREE.MeshLambertMaterial({ map: texturePared4, shading: THREE.FlatShading });
+var meshPared4 = new THREE.Mesh(geometryPared4, materialPared4);
+meshPared4.position.set(-25, 10, 0);
+meshPared4.castShadow = true;
+casaD.add(meshPared4);
+
+// Techo
+var geometryTecho = new THREE.BoxGeometry(80, 1, 100);
+var textureTecho = new THREE.TextureLoader().load("./images/mad.jpg");
+var materialTecho = new THREE.MeshLambertMaterial({ map: textureTecho, shading: THREE.FlatShading });
+var meshTecho = new THREE.Mesh(geometryTecho, materialTecho);
+meshTecho.position.set(0, 20, 0);
+meshTecho.castShadow = true;
+casaD.add(meshTecho);
+
+// Ventanas
+var ventanaGeometry = new THREE.BoxGeometry(10, 10, 2);
+var textureVentana = new THREE.TextureLoader().load("./images/ven.jpg");
+var materialVentana = new THREE.MeshLambertMaterial({ map: textureVentana, shading: THREE.FlatShading });
+var ventana1 = new THREE.Mesh(ventanaGeometry, materialVentana);
+ventana1.position.set(-15, 10, -50);
+ventana1.castShadow = true;
+casaD.add(ventana1);
+
+var ventana2 = new THREE.Mesh(ventanaGeometry, materialVentana);
+ventana2.position.set(15, 10, -50);
+ventana2.castShadow = true;
+casaD.add(ventana2);
+
+// Puerta
+var puertaGeometry = new THREE.BoxGeometry(10, 17, 2);
+var texturePuerta = new THREE.TextureLoader().load("./images/do.jpg");
+var materialPuerta = new THREE.MeshLambertMaterial({ map: texturePuerta, shading: THREE.FlatShading });
+var puerta = new THREE.Mesh(puertaGeometry, materialPuerta);
+puerta.position.set(0, 7, 50);
+puerta.castShadow = true;
+casaD.add(puerta);
+
+// Agregar el grupo "casaD" a la escena
+scene.add(casaD);
+
+// Mover la casaD a una posición en la escena
+casaD.position.set(80, 0, 17); // Mueve a la posición (x: 0, y: 0, z: 0)
+
+// Escalar la casaD
+casaD.scale.set(.60, .60,.60 ); // Escala de la casaD (cambiar 1, 1, 1 por los valores deseados)
+
+// Rotar la casaD
+casaD.rotation.set(0, Math.PI * 3.50, 0); // Rota la casaD (en radianes)
+
+// Iluminación y sombras
+scene.add(light1);
+scene.add(light2);
+scene.add(light3);
+
+///////////////////////////////////////////////
+     ////PINO 1
+        var pino = new THREE.ConeGeometry(3,5,15);
+        var verde = new THREE.MeshBasicMaterial({color:0x32e81a});
+        var pinopintado = new THREE.Mesh(pino,verde);
+        
+
+        var pino1 = new THREE.ConeGeometry(4,5,15);
+        var pinopintado1 = new THREE.Mesh(pino1,verde);
+        pinopintado1.position.set(0,-3,0);
+        
+
+        var pino2 = new THREE.ConeGeometry(5,5,15);
+        var pinopintado2 = new THREE.Mesh(pino2,verde);
+        pinopintado2.position.set(0,-5,0);
+       
+
+        var palo = new THREE.CylinderGeometry(1,1,8,10,15);
+        var cafe = new THREE.MeshBasicMaterial({color:0x853f01});
+        var palopintado = new THREE.Mesh(palo,cafe);
+        palopintado.position.set(0,-5,0);
+        
+        var arbol = new THREE.Group();
+        arbol.add(pinopintado,pinopintado1,pinopintado2,palopintado)
+        arbol.position.set(0,9,0);
+        arbol.scale.set(0.5,0.5,0.5);
+        
+        
+        var esfera = new THREE.SphereGeometry(0.5,16,16);
+        var rojo = new THREE.MeshBasicMaterial({color:0xc91f19});
+        var esferaRoja = new THREE.Mesh(esfera,rojo);
+        esferaRoja.position.set(0,5,3.2);
+        
+
+        var esfera1 = new THREE.SphereGeometry(0.5,16,16);
+        var negro = new THREE.MeshBasicMaterial({color:0x290302});
+        var esferaNegra = new THREE.Mesh(esfera1,negro);
+        esferaNegra.position.set(1,8,2.3);
+       
+     
+        var esferaNegra1 = new THREE.Mesh(esfera1,negro);
+        esferaNegra1.position.set(-1,8,2.3);
+        
+
+        var gorro = new THREE.CylinderGeometry(0.5,5,5,10,5);
+        var gorroPintado = new THREE.Mesh(gorro,rojo);
+        gorroPintado.scale.set(0.5,0.5,0.5);
+        gorroPintado.position.set(0,11,0);
+        
+
+        var blanco = new THREE.MeshBasicMaterial({color:0xf8e5e5});
+        var esferaBlanca = new THREE.Mesh(esfera,blanco);
+        esferaBlanca.position.set(0,12.7,0);
+       
+        
+        var adornos = new THREE.Group();
+        adornos.add(esferaRoja,esferaNegra,esferaNegra1,gorroPintado,esferaBlanca)
+        adornos.scale.set(0.5,0.5,0.5);
+        adornos.position.set(0,4.5,0);
+        
+
+        var regalo01 = new THREE.Group();
+        regalo01.add(adornos,arbol);
+        regalo01.position.set(-6.5,-3.5,13); //Casa Principal
+        scene.add(regalo01);
+
+        var regalo02 = regalo01.clone();
+        regalo02.position.set(-15,-3.5,-5); //Casa Secundaria -15,1,-32 DDD
+        scene.add(regalo02);
+
+        
+        var regalo03 = regalo01.clone();
+        regalo03.position.set(-21,-2,25);//(-24, 1, 15)Arbol Para entrar a casa IZQ
+        regalo03.scale.set(.7,.7,.7);
+        scene.add(regalo03);
+
+        var regalo04 = regalo01.clone();
+        regalo04.position.set(20,3,40);
+        scene.add(regalo04);
+
+        var regalo05 = regalo01.clone(); ///El que estorba XD
+        regalo04.position.set(19,-3,45);
+        scene.add(regalo05);
+
+        var regalo06 = regalo01.clone();
+        regalo06.position.set(36,-3.5,12);////Arbol tercera Casa
+        scene.add(regalo06);
+
+        var regalo07 = regalo01.clone();
+        regalo07.position.set(9,3,55);///Retorno
+        scene.add(regalo07);
+
+        var regalo08 = regalo01.clone();
+        regalo07.position.set(-6.5,-3.5,13);///Dentro de CasaD
+        scene.add(regalo07);
+
+        var regalo09 = regalo01.clone(); ///Para ir a casa
+        regalo09.position.set(85,-3,48);
+        scene.add(regalo09);
+
+        var regalo10 = regalo01.clone(); ///Para ir a casa
+        regalo10.position.set(126,-3,42);
+        scene.add(regalo10);
+
+        var regalo11 = regalo01.clone(); ///Para ir a casa
+        regalo11.position.set(122,-3,18);
+        scene.add(regalo11);
+
+
+        // Crear un grupo para la corona y las esferas
+var coroasYEsferas = new THREE.Group();
+
+// Crear la geometría y material de la corona
+var crownGeometry = new THREE.TorusGeometry(5, 1.2, 16, 100); 
+var crownMaterial = new THREE.MeshStandardMaterial({ color: 0x228B22 });
+var crown = new THREE.Mesh(crownGeometry, crownMaterial);
+coroasYEsferas.add(crown); // Agregar la corona al grupo
+
+// Crear la geometría de las esferas
+var sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+var colors = [0xff0000, 0xffff00, 0xffffff, 0x0000ff];
+
+// Crear las esferas y agregar clones de cada una
+var sphereData = [
+    { color: 0x960ff, position: [5, -1, 1] },
+    { color: 0xff0000, position: [4, 3, 1] },
+    { color: 0xfbff00, position: [0, 5, 1] },
+    { color: 0x9700ff, position: [-3, 4, 1] },
+    { color: 0xff00f7, position: [2.5, 4.5, 1] },
+    { color: 0x00ffd4, position: [5, 1, 1] },
+    { color: 0xffb600, position: [1.5, -4.5, 1] }
+];
+
+sphereData.forEach(function(data) {
+    var material = new THREE.MeshBasicMaterial({ color: data.color });
+    var sphere = new THREE.Mesh(sphereGeometry, material);
+    sphere.position.set(...data.position);
+    sphere.scale.set(0.3, 0.3, 0.3);
+    coroasYEsferas.add(sphere);
+
+    // Crear clones de cada esfera y agregarlos al grupo
+    var clone = sphere.clone();
+    clone.position.set(data.position[0] - 5, data.position[1] + 2, data.position[2]);
+    coroasYEsferas.add(clone);
+});
+
+// Agregar el grupo completo a la escena
+scene.add(coroasYEsferas);
+coroasYEsferas.position.set(8,6,11);
+coroasYEsferas.scale.set(0.3, 0.3,0.3);
+coroasYEsferas.rotation.x += 0.01;
+    coroasYEsferas.rotation.y += 1.5;
+    coroasYEsferas.rotation.z += 1.5;
+
+
+//////////////////////
+
+
+        ///////////////////////////////////////////////////////////
+
+
+        // inician las interacciones ################################################################################################################
+        //Se añade el "evento" mouse arriba, mouse se retira, click
+
+        ///Pinos
+
+        regalo01.addEventListener('mouseover', (event) => {  //Evento para cuando colocamos el cursor sobre la figura
+          document.body.style.cursor = 'pointer';
+          event.target.scale.set(1.2, 1.2, 1.2);
+        });
+        regalo01.addEventListener('mouseout', (event) => {  //evento para cuando quitas el cursor de la figura, si no se agrega se le quedara el color que se puso en el mouseover
+           document.body.style.cursor = 'default';
+          event.target.scale.set(1, 1, 1);
+        });
+
+        regalo01.addEventListener('click', (event) => { //evento para cuando se suelta el clic
+          var coords = { x: camera.position.x, y: camera.position.y, z: camera.position.z };// se crea un objeto para "contener" las coordenadas
+          event.target.scale.set(1.0, 1.0, 1.0);
+          new TWEEN.Tween(coords) //Se declara el TWEEN, que permite que los movimientos sean fluidos y no de golpe 
+          .to({x:-6.5,y:3.5,z:9}) // -6.5,-3.5,13 se indican los cambios que se presentaran y en que variables, INDICA LA POSICIÓN FINAL DE MOVIMIENTO
+          .onUpdate(() => camera.position.set(coords.x,coords.y,coords.z )  //Se actualizan las vartiables en el objetivo del movimiento SE ACTUALIZAN LAS VARIABLES EN LA CAMARA
+          )
+          .start();//El movimiento inicia
+        }); 
+
+
+        regalo02.addEventListener('mouseover', (event) => {  //Evento para cuando colocamos el cursor sobre la figura
+          document.body.style.cursor = 'pointer';
+          event.target.scale.set(1.2, 1.2, 1.2);
+        });
+        regalo02.addEventListener('mouseout', (event) => {  //evento para cuando quitas el cursor de la figura, si no se agrega se le quedara el color que se puso en el mouseover
+           document.body.style.cursor = 'default';
+          event.target.scale.set(1, 1, 1);
+        });
+
+        regalo02.addEventListener('click', (event) => { //evento para cuando se suelta el clic
+          var coords = { x: camera.position.x, y: camera.position.y, z: camera.position.z };// se crea un objeto para "contener" las coordenadas
+          event.target.scale.set(1.0, 1.0, 1.0);
+          new TWEEN.Tween(coords) //Se declara el TWEEN, que permite que los movimientos sean fluidos y no de golpe 
+          .to({x:35, y: 3, z: 23}) //se indican los cambios que se presentaran y en que variables, INDICA LA POSICIÓN FINAL DE MOVIMIENTO
+          .onUpdate(() => camera.position.set(coords.x,coords.y,coords.z )  //Se actualizan las vartiables en el objetivo del movimiento SE ACTUALIZAN LAS VARIABLES EN LA CAMARA
+          )
+          .start();//El movimiento inicia
+        }); 
+
+
+        regalo03.addEventListener('mouseover', (event) => {  //Evento para cuando colocamos el cursor sobre la figura
+          document.body.style.cursor = 'pointer';
+          event.target.scale.set(1.2, 1.2, 1.2);
+        });
+        regalo03.addEventListener('mouseout', (event) => {  //evento para cuando quitas el cursor de la figura, si no se agrega se le quedara el color que se puso en el mouseover
+           document.body.style.cursor = 'default';
+          event.target.scale.set(1, 1, 1);
+        });
+
+        regalo03.addEventListener('click', (event) => { //evento para cuando se suelta el clic
+          var coords = { x: camera.position.x, y: camera.position.y, z: camera.position.z };// se crea un objeto para "contener" las coordenadas
+          event.target.scale.set(1.0, 1.0, 1.0);
+          new TWEEN.Tween(coords) //Se declara el TWEEN, que permite que los movimientos sean fluidos y no de golpe 
+          .to({x:-23, y: 3, z: 18}) //-21,-2,24se indican los cambios que se presentaran y en que variables, INDICA LA POSICIÓN FINAL DE MOVIMIENTO
+          .onUpdate(() => camera.position.set(coords.x,coords.y,coords.z )  //Se actualizan las vartiables en el objetivo del movimiento SE ACTUALIZAN LAS VARIABLES EN LA CAMARA
+          )
+          .start();//El movimiento inicia
+        }); 
+
+        regalo04.addEventListener('mouseover', (event) => {  //Evento para cuando colocamos el cursor sobre la figura
+          document.body.style.cursor = 'pointer';
+          event.target.scale.set(1.2, 1.2, 1.2);
+        });
+        regalo04.addEventListener('mouseout', (event) => {  //0,-13.5,-30evento para cuando quitas el cursor de la figura, si no se agrega se le quedara el color que se puso en el mouseover
+           document.body.style.cursor = 'default';
+          event.target.scale.set(1, 1, 1);
+        });
+
+        regalo04.addEventListener('click', (event) => { //evento para cuando se suelta el clic
+          var coords = { x: camera.position.x, y: camera.position.y, z: camera.position.z };// se crea un objeto para "contener" las coordenadas
+          event.target.scale.set(1.0, 1.0, 1.0);
+          new TWEEN.Tween(coords) //Se declara el TWEEN, que permite que los movimientos sean fluidos y no de golpe 
+          .to({x:19, y: 3, z: 45}) //0,-13.5,-30se indican los cambios que se presentaran y en que variables, INDICA LA POSICIÓN FINAL DE MOVIMIENTO
+          .onUpdate(() => camera.position.set(coords.x,coords.y,coords.z )  //Se actualizan las vartiables en el objetivo del movimiento SE ACTUALIZAN LAS VARIABLES EN LA CAMARA
+          )
+          .start();//El movimiento inicia
+        }); 
+
+        regalo05.addEventListener('mouseover', (event) => {  //Evento para cuando colocamos el cursor sobre la figura
+          document.body.style.cursor = 'pointer';
+          event.target.scale.set(1.2, 1.2, 1.2);
+        });
+        regalo05.addEventListener('mouseout', (event) => {  //evento para cuando quitas el cursor de la figura, si no se agrega se le quedara el color que se puso en el mouseover
+           document.body.style.cursor = 'default';
+          event.target.scale.set(1, 1, 1);
+        });
+
+        regalo05.addEventListener('click', (event) => { //evento para cuando se suelta el clic
+          var coords = { x: camera.position.x, y: camera.position.y, z: camera.position.z };// se crea un objeto para "contener" las coordenadas
+          event.target.scale.set(1.0, 1.0, 1.0);
+          new TWEEN.Tween(coords) //Se declara el TWEEN, que permite que los movimientos sean fluidos y no de golpe 
+          .to({x:19, y: -3.5, z: 45}) //19,-3,45 se indican los cambios que se presentaran y en que variables, INDICA LA POSICIÓN FINAL DE MOVIMIENTO
+          .onUpdate(() => camera.position.set(coords.x,coords.y,coords.z )  //Se actualizan las vartiables en el objetivo del movimiento SE ACTUALIZAN LAS VARIABLES EN LA CAMARA
+          )
+          .start();//El movimiento inicia
+        }); 
+
+        regalo06.addEventListener('mouseover', (event) => {  //Evento para cuando colocamos el cursor sobre la figura
+          document.body.style.cursor = 'pointer';
+          event.target.scale.set(1.2, 1.2, 1.2);
+        });
+        regalo06.addEventListener('mouseout', (event) => {  //0,-13.5,-30evento para cuando quitas el cursor de la figura, si no se agrega se le quedara el color que se puso en el mouseover
+           document.body.style.cursor = 'default';
+          event.target.scale.set(1, 1, 1);
+        });
+
+        regalo06.addEventListener('click', (event) => { //evento para cuando se suelta el clic
+          var coords = { x: camera.position.x, y: camera.position.y, z: camera.position.z };// se crea un objeto para "contener" las coordenadas
+          event.target.scale.set(1.0, 1.0, 1.0);
+          new TWEEN.Tween(coords) //Se declara el TWEEN, que permite que los movimientos sean fluidos y no de golpe 
+          .to({x:36, y: 4, z: 12}) //36,-3.5,12 se indican los cambios que se presentaran y en que variables, INDICA LA POSICIÓN FINAL DE MOVIMIENTO
+          .onUpdate(() => camera.position.set(coords.x,coords.y,coords.z )  //Se actualizan las vartiables en el objetivo del movimiento SE ACTUALIZAN LAS VARIABLES EN LA CAMARA
+          )
+          .start();//El movimiento inicia
+        }); 
+
+        regalo07.addEventListener('mouseover', (event) => {  //Evento para cuando colocamos el cursor sobre la figura
+          document.body.style.cursor = 'pointer';
+          event.target.scale.set(1.2, 1.2, 1.2);
+        });
+        regalo07.addEventListener('mouseout', (event) => {  //0,-13.5,-30evento para cuando quitas el cursor de la figura, si no se agrega se le quedara el color que se puso en el mouseover
+           document.body.style.cursor = 'default';
+          event.target.scale.set(1, 1, 1);
+        });
+
+        regalo07.addEventListener('click', (event) => { //evento para cuando se suelta el clic
+          var coords = { x: camera.position.x, y: camera.position.y, z: camera.position.z };// se crea un objeto para "contener" las coordenadas
+          event.target.scale.set(1.0, 1.0, 1.0);
+          new TWEEN.Tween(coords) //Se declara el TWEEN, que permite que los movimientos sean fluidos y no de golpe 
+          .to({x:0, y: 3, z: 30}) //0,-3,60se indican los cambios que se presentaran y en que variables, INDICA LA POSICIÓN FINAL DE MOVIMIENTO
+          .onUpdate(() => camera.position.set(coords.x,coords.y,coords.z )  //Se actualizan las vartiables en el objetivo del movimiento SE ACTUALIZAN LAS VARIABLES EN LA CAMARA
+          )
+          .start();//El movimiento inicia
+        }); 
+
+        regalo08.addEventListener('mouseover', (event) => {  //Evento para cuando colocamos el cursor sobre la figura
+          document.body.style.cursor = 'pointer';
+          event.target.scale.set(1.2, 1.2, 1.2);
+        });
+        regalo08.addEventListener('mouseout', (event) => {  //evento para cuando quitas el cursor de la figura, si no se agrega se le quedara el color que se puso en el mouseover
+           document.body.style.cursor = 'default';
+          event.target.scale.set(1, 1, 1);
+        });
+
+        regalo08.addEventListener('click', (event) => { //evento para cuando se suelta el clic
+          var coords = { x: camera.position.x, y: camera.position.y, z: camera.position.z };// se crea un objeto para "contener" las coordenadas
+          event.target.scale.set(1.0, 1.0, 1.0);
+          new TWEEN.Tween(coords) //Se declara el TWEEN, que permite que los movimientos sean fluidos y no de golpe 
+          .to({x:-6.5,y:3.5,z:13}) //se indican los cambios que se presentaran y en que variables, INDICA LA POSICIÓN FINAL DE MOVIMIENTO
+          .onUpdate(() => camera.position.set(coords.x,coords.y,coords.z )  //Se actualizan las vartiables en el objetivo del movimiento SE ACTUALIZAN LAS VARIABLES EN LA CAMARA
+          )
+          .start();//El movimiento inicia
+        }); 
+
+        regalo09.addEventListener('mouseover', (event) => {  //Evento para cuando colocamos el cursor sobre la figura
+          document.body.style.cursor = 'pointer';
+          event.target.scale.set(1.2, 1.2, 1.2);
+        });
+        regalo09.addEventListener('mouseout', (event) => {  //0,-13.5,-30evento para cuando quitas el cursor de la figura, si no se agrega se le quedara el color que se puso en el mouseover
+           document.body.style.cursor = 'default';
+          event.target.scale.set(1, 1, 1);
+        });
+
+        regalo09.addEventListener('click', (event) => { //evento para cuando se suelta el clic
+          var coords = { x: camera.position.x, y: camera.position.y, z: camera.position.z };// se crea un objeto para "contener" las coordenadas
+          event.target.scale.set(1.0, 1.0, 1.0);
+          new TWEEN.Tween(coords) //Se declara el TWEEN, que permite que los movimientos sean fluidos y no de golpe 
+          .to({x:106, y: 3, z: 48}) //65,-3,48se indican los cambios que se presentaran y en que variables, INDICA LA POSICIÓN FINAL DE MOVIMIENTO
+          .onUpdate(() => camera.position.set(coords.x,coords.y,coords.z )  //Se actualizan las vartiables en el objetivo del movimiento SE ACTUALIZAN LAS VARIABLES EN LA CAMARA
+          )
+          .start();//El movimiento inicia
+        }); 
+
+        regalo10.addEventListener('mouseover', (event) => {  //Evento para cuando colocamos el cursor sobre la figura
+          document.body.style.cursor = 'pointer';
+          event.target.scale.set(1.2, 1.2, 1.2);
+        });
+        regalo10.addEventListener('mouseout', (event) => {  //0,-13.5,-30evento para cuando quitas el cursor de la figura, si no se agrega se le quedara el color que se puso en el mouseover
+           document.body.style.cursor = 'default';
+          event.target.scale.set(1, 1, 1);
+        });
+
+        regalo10.addEventListener('click', (event) => { //evento para cuando se suelta el clic
+          var coords = { x: camera.position.x, y: camera.position.y, z: camera.position.z };// se crea un objeto para "contener" las coordenadas
+          event.target.scale.set(1.0, 1.0, 1.0);
+          new TWEEN.Tween(coords) //Se declara el TWEEN, que permite que los movimientos sean fluidos y no de golpe 
+          .to({x:126, y: 3, z: 42}) //65,-3,48se indican los cambios que se presentaran y en que variables, INDICA LA POSICIÓN FINAL DE MOVIMIENTO
+          .onUpdate(() => camera.position.set(coords.x,coords.y,coords.z )  //Se actualizan las vartiables en el objetivo del movimiento SE ACTUALIZAN LAS VARIABLES EN LA CAMARA
+          )
+          .start();//El movimiento inicia
+        }); 
+
+        regalo11.addEventListener('mouseover', (event) => {  //Evento para cuando colocamos el cursor sobre la figura
+          document.body.style.cursor = 'pointer';
+          event.target.scale.set(1.2, 1.2, 1.2);
+        });
+        regalo11.addEventListener('mouseout', (event) => {  //0,-13.5,-30evento para cuando quitas el cursor de la figura, si no se agrega se le quedara el color que se puso en el mouseover
+           document.body.style.cursor = 'default';
+          event.target.scale.set(1, 1, 1);
+        });
+
+        regalo11.addEventListener('click', (event) => { //evento para cuando se suelta el clic
+          var coords = { x: camera.position.x, y: camera.position.y, z: camera.position.z };// se crea un objeto para "contener" las coordenadas
+          event.target.scale.set(1.0, 1.0, 1.0);
+          new TWEEN.Tween(coords) //Se declara el TWEEN, que permite que los movimientos sean fluidos y no de golpe 
+          .to({x:122, y: 3, z: 16}) //65,-3,48se indican los cambios que se presentaran y en que variables, INDICA LA POSICIÓN FINAL DE MOVIMIENTO
+          .onUpdate(() => camera.position.set(coords.x,coords.y,coords.z )  //Se actualizan las vartiables en el objetivo del movimiento SE ACTUALIZAN LAS VARIABLES EN LA CAMARA
+          )
+          .start();//El movimiento inicia
+        }); 
+
+ //////// FIN INTERACCION/////////
+        
+        interactionManager.add(regalo01); ////////////// Añadir el elemento que se quiere animar al interactionmanager, si no se respetan las interacciones
+        interactionManager.add(regalo02); 
+        interactionManager.add(regalo03); 
+        interactionManager.add(regalo04);
+        interactionManager.add(regalo05);
+        interactionManager.add(regalo06);
+        interactionManager.add(regalo07);
+        interactionManager.add(regalo08);
+        interactionManager.add(regalo09);
+        interactionManager.add(regalo10);
+        interactionManager.add(regalo11);
+
+
+//// CRUZ CENTRAL QUE SIRVE DE GUIA
+        var geometryx = new THREE.BoxGeometry(.0075, .05, .075);
+        var materialx = new THREE.MeshNormalMaterial({side:THREE.DoubleSide});
+        var meshx = new THREE.Mesh(geometryx, materialx);
+        meshx.position.set(0,0,-1);
+        var geometryx2 = new THREE.BoxGeometry(.05, .0075, .075);
+        var meshx2 = new THREE.Mesh(geometryx2, materialx);
+        meshx2.position.set(0,0,-1);
+        scene.add( camera );
+        camera.add( meshx, meshx2 );
+
+
+      //🎰🎰Rendering y animación
+      requestAnimationFrame(render);
+      function render() {
+
+    TWEEN.update()  //se agrega la transición del tween a functionrender para que genere la animación el movimiento suave
+
+    interactionManager.update();////// se debe actualizar el interaction manager en las animaciones
+
+     //🪄🪄 Animación - 
+
+      //Llamado para renderizar y volver a llamar a la misma función (render)
+      renderer.render(scene, camera);
+      requestAnimationFrame(render);
+      }
+      renderer.setAnimationLoop(render);
+</script>
+</body>
+</html>

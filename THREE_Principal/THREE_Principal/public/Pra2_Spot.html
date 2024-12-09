@@ -1,0 +1,220 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+<meta charset="UTF-8" /> 
+     <title>Archivo base</title>
+     <style>
+     </style>
+</head>
+<body>
+<canvas id="myCanvas">
+    <!--El elemento HTML canvas se puede utilizar para dibujar gráficos a través de 
+        secuencias de comandos (por lo general JavaScript ).-->
+</canvas>
+<script type="importmap"> 
+    {
+        "imports":{
+            "three": "./js/three.module.js",
+            "three/OrbitControls": "./js/OrbitControls.js" 
+        }
+}
+</script>
+<script type="module"> 
+    //👉🏽 Mandar llamar a la librería
+    import{RoundedBoxGeometry}from"./js/RoundedBoxGeometry.js";
+    import * as THREE from 'three'; 
+    import {OrbitControls} from 'three/OrbitControls';
+    console.log(OrbitControls);
+
+    //👉🏽 Renderer - Realiza una conexión entre el código y el canvas
+    var renderer = new THREE.WebGLRenderer({canvas: document.getElementById('myCanvas'),antialias: true});
+    renderer.setPixelRatio(window.decivePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x85929E);
+
+    //🎬 Creando nueva escena 
+    var scene = new THREE.Scene();
+
+    //🎥 Agregar una cámara de perspectiva
+    var camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 5000);
+    scene.add(camera);
+
+    //👉🏽Settings de la cámara
+    camera.position.set(0, 4, 25);
+
+    //👉🏽Añadiendo los OrbitControls
+    var controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    //✏️GridHelper
+    const gridHelper = new THREE.GridHelper(50,10);
+    scene.add (gridHelper);
+
+    //✏️Ejes
+    const axesHelper = new THREE.AxesHelper(50);
+    scene.add (axesHelper);
+  
+
+    // 🪄🪄 SECCIÓN DE CÓDIGO 🪄🪄
+    
+    //Luces
+
+      var light1= new THREE.AmbientLight(0xFF5733,0.5);
+      light1.position.set(50,50,50);
+      scene.add(light1);
+
+      var light2= new THREE.DirectionalLight(0xb233ff ,0.5);
+      light2.position.set(40,50,50);
+      scene.add(light2);
+
+      var light3= new THREE.HemisphereLight(0x000000,0.7);
+      light3.position.set(30,50,0);
+      scene.add(light3);
+
+//Base
+    var geometry01=new THREE.PlaneGeometry(40,20);
+     var material01=new THREE.MeshLambertMaterial ({color:0x33a2ff ,side:THREE.DoubleSide});
+     var mesh01=new THREE.Mesh(geometry01,material01);
+     scene.add(mesh01);
+     mesh01.position.set(0,0,0);
+     mesh01.rotation.set(1.57,0,0);
+
+     //Flor1
+     var geometry01=new RoundedBoxGeometry(2,6,2,10,0.5);
+     var material02=new THREE.MeshLambertMaterial({color:0xb233ff, wireframe:true});
+     var mesh02=new THREE.Mesh(geometry01,material02);
+     scene.add(mesh02);
+     mesh02.position.set(15,5,0);
+
+     var g1=mesh02.clone();
+     scene.add(g1); 
+     g1.position.set(15,5,0);
+     g1.rotation.set(0,0,1.57);
+
+     var g1=mesh02.clone();
+     
+     scene.add(g1);
+     g1.position.set(15,5,0);
+     g1.rotation.set(0,0,0.785);
+
+     var g1=mesh02.clone();
+     scene.add(g1);
+     g1.position.set(15,5,0);
+     g1.rotation.set(0,0,5.495);
+
+     var g1=mesh02.clone();
+     scene.add(g1);
+     g1.position.set(15,5,0);
+     g1.rotation.set(0,0,2.355);
+
+
+     var flo1 = new THREE.Group();
+     flo1.add(g1);
+
+
+     //luzDireccion //luz morada
+     var light7= new THREE.SpotLight(0xb233ff,2,20,0.36,0.5,0);
+     light7.position.set(0,10,0);
+     var helper7=new THREE.SpotLightHelper(light7);
+     scene.add(helper7);
+     light7.target.position.set(15,10,0);
+     scene.add(light7);
+     
+     //Flor 2
+     var geometry01=new RoundedBoxGeometry(2,6,2,10,0.5);
+     var material02=new THREE.MeshLambertMaterial({color:0xfffb00, wireframe:true});
+     var mesh02=new THREE.Mesh(geometry01,material02);
+     scene.add(mesh02);
+     mesh02.position.set(0,5,0);
+
+     var g1=mesh02.clone();
+     scene.add(g1); 
+     g1.position.set(0,5,0);
+     g1.rotation.set(0,0,1.57);
+
+     var g1=mesh02.clone();
+     
+     scene.add(g1);
+     g1.position.set(0,5,0);
+     g1.rotation.set(0,0,0.785);
+
+     var g1=mesh02.clone();
+     scene.add(g1);
+     g1.position.set(0,5,0);
+     g1.rotation.set(0,0,5.495);
+
+     var g1=mesh02.clone();
+     scene.add(g1);
+     g1.position.set(0,5,0);
+     g1.rotation.set(0,0,2.355);
+
+     var flo1 = new THREE.Group();
+     flo1.add(g1);
+
+
+     //luzDireccion 2 luz amarilla
+     var light8= new THREE.SpotLight(0xFFC300,2,20,0.36,4,0);
+     light8.position.set(15,10,0);
+     var helper8=new THREE.SpotLightHelper(light8);
+     scene.add(helper8);
+     light8.target.position.set(5,10,0);
+     scene.add(light8);
+
+ //Flor3
+ var geometry01=new RoundedBoxGeometry(2,6,2,10,0.5);
+     var material02=new THREE.MeshLambertMaterial({color:0x32e23d, wireframe:true});
+     var mesh02=new THREE.Mesh(geometry01,material02);
+     scene.add(mesh02);
+     mesh02.position.set(-15,5,0);
+
+     var g1=mesh02.clone();
+     scene.add(g1); 
+     g1.position.set(-15,5,0);
+     g1.rotation.set(0,0,1.57);
+
+     var g1=mesh02.clone();
+     
+     scene.add(g1);
+     g1.position.set(-15,5,0);
+     g1.rotation.set(0,0,0.785);
+
+     var g1=mesh02.clone();
+     scene.add(g1);
+     g1.position.set(-15,5,0);
+     g1.rotation.set(0,0,5.495);
+
+     var g1=mesh02.clone();
+     scene.add(g1);
+     g1.position.set(-15,5,0);
+     g1.rotation.set(0,0,2.355);
+
+
+     var flo1 = new THREE.Group();
+     flo1.add(g1);
+
+
+     //luzDireccion //luz 
+     var light9= new THREE.SpotLight(0x3280e2,2,20,0.36,0.5,0);
+     light9.position.set(-25,10,0);
+     var helper9=new THREE.SpotLightHelper(light9);
+     scene.add(helper9);
+     light9.target.position.set(15,0,0);
+     scene.add(light9);
+
+
+      //🎰🎰Rendering y animación
+      requestAnimationFrame(render);
+      function render() {
+
+      //🪄🪄 Animación
+
+      controls.update();
+
+      //Llamado para renderizar y volver a llamar a la misma función (render)
+      renderer.render(scene, camera);
+      requestAnimationFrame(render);
+      }
+</script>
+</body>
+</html>

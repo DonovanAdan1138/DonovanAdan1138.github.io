@@ -1,0 +1,193 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+<meta charset="UTF-8" /> 
+     <title>Pra4_VPGA
+     </title>
+     <style>
+     </style>
+</head>
+<body>
+<canvas id="myCanvas">
+    <!--El elemento HTML canvas se puede utilizar para dibujar gráficos a través de 
+        secuencias de comandos (por lo general JavaScript ).-->
+</canvas>
+<script src="./font/Halloween_Regular.js"></script>
+<script type="importmap"> 
+    {
+        "imports":{
+            "three": "./js/three.module.js",
+            "three/OrbitControls": "./js/OrbitControls.js" 
+        }
+}
+</script>
+<script type="module"> 
+    //👉🏽 Mandar llamar a la librería
+    import * as THREE from 'three'; 
+    import {OrbitControls} from 'three/OrbitControls';
+    import{RoundedBoxGeometry}from "./js/RoundedBoxGeometry.js"; 
+    console.log(OrbitControls);
+    import {TextGeometry} from "./js/TextGeometry.js";
+    import {FontLoader} from "./js/FontLoader.js";
+
+    //👉🏽 Renderer - Realiza una conexión entre el código y el canvas
+    var renderer = new THREE.WebGLRenderer({canvas: document.getElementById('myCanvas'),antialias: true});
+    renderer.setPixelRatio(window.decivePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x85929E);
+
+    //🎬 Creando nueva escena 
+    var scene = new THREE.Scene();
+
+    //🎥 Agregar una cámara de perspectiva
+    var camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 5000);
+    scene.add(camera);
+
+    //👉🏽Settings de la cámara
+    camera.position.set(0, 4, 25);
+
+    //👉🏽Añadiendo los OrbitControls
+    var controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    //✏️GridHelper
+    //const gridHelper = new THREE.GridHelper(50,10);
+    //scene.add (gridHelper);
+
+    //✏️Ejes
+    //const axesHelper = new THREE.AxesHelper(50);
+    //scene.add (axesHelper);
+  
+
+    // 🪄🪄 SECCIÓN DE CÓDIGO 🪄🪄
+
+    var loader = new THREE.TextureLoader();
+    var bgTexture = loader.load('./images/fondo.jpg');
+    scene.background = bgTexture;
+
+    //cubo con textura
+
+    var cubo = new THREE.BoxGeometry(10,10,10);
+    var texturaImagen = new THREE.TextureLoader().load('./images/cubo.jpg');
+    var material = new THREE.MeshLambertMaterial({
+        map:texturaImagen
+    });
+    var cuboTexturizado = new THREE.Mesh(cubo,material);
+    scene.add(cuboTexturizado);
+    
+    
+    //cubo con textura repetida
+
+    var cubo = new THREE.BoxGeometry(10,10,10);
+    var texturaImagen = new THREE.TextureLoader().load('./images/cubo.jpg');
+    var material = new THREE.MeshLambertMaterial({
+        map:texturaImagen
+    });
+    var cuboTexturizado = new THREE.Mesh(cubo,material);
+    scene.add(cuboTexturizado);
+    cuboTexturizado.position.set(10,0,0);
+    texturaImagen.wrapS = THREE.RepeatWrapping;
+    texturaImagen.wrapT = THREE.RepeatWrapping;
+    texturaImagen.repeat.set(3,3);
+    
+    //cubo con rotacion
+
+    var cubo = new THREE.BoxGeometry(10,10,10);
+    var texturaImagen = new THREE.TextureLoader().load('./images/cubo.jpg');
+    var material = new THREE.MeshLambertMaterial({
+        map:texturaImagen
+    });
+    var cuboTexturizado = new THREE.Mesh(cubo,material);
+    scene.add(cuboTexturizado);
+    cuboTexturizado.position.set(-10,0,0);
+    texturaImagen.rotation = 0.5;
+      
+
+    //cubo con translacion
+
+    var cubo = new THREE.BoxGeometry(10,10,10);
+    var texturaImagen = new THREE.TextureLoader().load('./images/cubo.jpg');
+    var material = new THREE.MeshLambertMaterial({
+        map:texturaImagen
+    });
+    var cuboTexturizado = new THREE.Mesh(cubo,material);
+    scene.add(cuboTexturizado);
+    cuboTexturizado.position.set(0,10,0);
+    texturaImagen.offset.x = 0.5;
+    texturaImagen.offset.y = 0.5;
+        
+
+
+
+
+
+
+    //BASE
+    var geometry= new THREE.BoxGeometry(200,0.1,100);
+     var material= new THREE.MeshLambertMaterial({color:0x6ab9fe});
+     var mesh01= new THREE.Mesh(geometry,material);
+     mesh01.receiveShadow=true;
+     scene.add(mesh01); 
+     mesh01.position.set(0,-8,0);
+
+    //sombra
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
+
+    var light2 = new THREE.DirectionalLight(0xffffff, 0.5);
+    light2.position.set(0, 20, 50);
+    light2.target.position.set(0, 0, 0);
+
+    light2.castShadow = true;
+    light2.shadow.bias = 0.01;
+    light2.shadow.mapSize.width = 1024;
+    light2.shadow.mapSize.heigth = 1024;
+
+    light2.shadow.camera.top = 25;
+    light2.shadow.camera.bottom = -25;
+    light2.shadow.camera.left = -50;
+    light2.shadow.camera.right = 50;
+    light2.shadow.camera.visible = true;
+
+    var directionalHelper = new THREE.CameraHelper(light2.shadow.camera);
+    scene.add(directionalHelper);
+    scene.add(light2);
+
+    //Texto grandote
+    var loader = new FontLoader();
+    var font = loader.parse(fontJSON);
+    var geometryt = new TextGeometry('SLENDY 1920',{
+        font: font,
+        size: 12,
+        height: 2,
+    });
+    geometryt.center();
+
+    var materialt = new THREE.MeshLambertMaterial({
+        color: 0xFFC300,
+        emissive: 0xed4444,
+        shading: THREE.FlatShading
+    });
+
+    var texto = new THREE.Mesh(geometryt, materialt);
+    texto.position.set(0,10,0);
+   // scene.add(texto);
+    texto.castShadow = true ;
+
+      //🎰🎰Rendering y animación
+      requestAnimationFrame(render);
+      function render() {
+
+      //🪄🪄 Animación
+      
+
+      controls.update();
+
+      //Llamado para renderizar y volver a llamar a la misma función (render)
+      renderer.render(scene, camera);
+      requestAnimationFrame(render);
+      }
+</script>
+</body>
+</html>

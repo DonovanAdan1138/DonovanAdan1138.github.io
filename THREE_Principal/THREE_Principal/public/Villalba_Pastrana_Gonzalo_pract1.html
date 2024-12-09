@@ -1,0 +1,349 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+<meta charset="UTF-8" /> 
+     <title>Archivo_base_Villalba_Pastrana_Gonzalo_pract1</title>
+     <style>
+     </style>
+</head>
+<body>
+<canvas id="myCanvas">
+    <!--El elemento HTML canvas se puede utilizar para dibujar gráficos a través de 
+        secuencias de comandos (por lo general JavaScript ).-->
+</canvas>
+<script type="importmap"> 
+    {
+        "imports":{
+            "three": "./js/three.module.js",
+            "three/OrbitControls": "./js/OrbitControls.js" 
+        }
+}
+</script>
+<script type="module"> 
+    //👉🏽 Mandar llamar a la librería
+    import * as THREE from 'three'; 
+    import {OrbitControls} from 'three/OrbitControls';
+    console.log(OrbitControls);
+
+    //👉🏽 Renderer - Realiza una conexión entre el código y el canvas
+    var renderer = new THREE.WebGLRenderer({canvas: document.getElementById('myCanvas'),antialias: true});
+    renderer.setPixelRatio(window.decivePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x010101);
+
+    //🎬 Creando nueva escena 
+    var scene = new THREE.Scene();
+
+    //🎥 Agregar una cámara de perspectiva
+    var camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 5000);
+    scene.add(camera);
+
+    //👉🏽Settings de la cámara
+    camera.position.set(0, 4, 25);
+
+    //👉🏽Añadiendo los OrbitControls
+    var controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    //✏️GridHelper
+    const gridHelper = new THREE.GridHelper(100,100);
+    scene.add (gridHelper);
+
+    //✏️Ejes
+    const axesHelper = new THREE.AxesHelper(50);
+    scene.add (axesHelper);
+  
+
+    // 🪄🪄 SECCIÓN DE CÓDIGO 🪄🪄
+   //cubo 
+var geometry01 = new THREE.BoxGeometry(2,2,2,12,12,12);
+var material01 = new THREE.MeshBasicMaterial({color:0x2e86c1});  
+var mesh1 = new THREE.Mesh(geometry01,material01);  
+scene.add(mesh1);
+
+//cubo2
+var geometry02 = new THREE.BoxGeometry(2,2,2,4,4,4);
+var material02 = new THREE.MeshBasicMaterial({color:0x212f3c,wireframe:true});  
+var mesh02 = new THREE.Mesh(geometry02,material02);  
+scene.add(mesh02);
+mesh02.position.set(4,0,0);
+
+//esfera
+var esfera = new THREE.SphereGeometry(2,14,14);
+var material03 = new THREE.MeshBasicMaterial({color:0x212f3c,wireframe:true});  
+var mesh03 = new THREE.Mesh(esfera,material03);  
+scene.add(mesh03);
+mesh03.position.set(8,0,0);
+
+   //esfera2
+var esfera2 = new THREE.SphereGeometry(2,14,14);
+var material04 = new THREE.MeshBasicMaterial({color:0xe74c3c });  
+var mesh4 = new THREE.Mesh(esfera2,material04);  
+scene.add(mesh4);
+mesh4.position.set(12,0,0);
+
+//cilindro
+var cilindro = new THREE.CylinderGeometry(2,2,4);
+var material05 = new THREE.MeshBasicMaterial({color:0x212f3c,wireframe:true});  
+var mesh05 = new THREE.Mesh(cilindro,material03);  
+scene.add(mesh05);
+mesh05.position.set(16,0,0);
+
+   //cilindro2
+var cilindro2 = new THREE.CylinderGeometry(2,2,4,10,10,false,3.5,3.5);
+var material06 = new THREE.MeshBasicMaterial({color:0x2e86c1});  
+var mesh6 = new THREE.Mesh(cilindro2,material04);  
+scene.add(mesh6);
+mesh6.position.set(20,0,0);
+
+//cono
+var cono = new THREE.ConeGeometry(2,4,8);
+var material07 = new THREE.MeshBasicMaterial({color:0x212f3c,wireframe:true});  
+var mesh07 = new THREE.Mesh(cono,material07);  
+scene.add(mesh07);
+mesh07.position.set(25,0,0);
+
+   //cono2
+var cono2 = new THREE.ConeGeometry(2,4,8);
+var material08 = new THREE.MeshBasicMaterial({color:0xe74c3c });  
+var mesh8 = new THREE.Mesh(cono2,material08);  
+scene.add(mesh8);
+mesh8.position.set(32,0,0);
+
+//Dona
+var dona = new THREE.TorusGeometry(2,1,10,10);
+var material09 = new THREE.MeshBasicMaterial({color:0x212f3c,wireframe:true});  
+var mesh09 = new THREE.Mesh(dona,material09);  
+scene.add(mesh09);
+mesh09.position.set(36,0,0);
+
+   //dona2
+var dona2 = new THREE.TorusGeometry(2,1,10,10);
+var material10 = new THREE.MeshBasicMaterial({color:0xe74c3c });  
+var mesh10 = new THREE.Mesh(dona2,material10);  
+scene.add(mesh10);
+mesh10.position.set(28,0,0);
+
+//otraDona
+var torusdona = new THREE.TorusKnotGeometry(2,0.5,35,10);
+var material11 = new THREE.MeshBasicMaterial({color:0x212f3c,wireframe:true});  
+var mesh11 = new THREE.Mesh(torusdona,material11);  
+scene.add(mesh11);
+mesh11.position.set(0,0,12);
+
+   //Otradona2
+var torusdona2 = new THREE.TorusKnotGeometry(2,0.5,35,10);
+var material12 = new THREE.MeshBasicMaterial({color:0xe74c3c });  
+var mesh12 = new THREE.Mesh(torusdona2,material12);  
+scene.add(mesh12);
+mesh12.position.set(6,0,12);
+
+//otraDona
+var torusdona = new THREE.PlaneGeometry(2,0.5,35,10);
+var material11 = new THREE.MeshBasicMaterial({color:0x212f3c,wireframe:true});  
+var mesh11 = new THREE.Mesh(torusdona,material11);  
+scene.add(mesh11);
+mesh11.position.set(0,0,12);
+
+   //Otradona2
+var torusdona2 = new THREE.PlaneGeometry(2,0.5,35,10);
+var material12 = new THREE.MeshBasicMaterial({color:0xe74c3c });  
+var mesh12 = new THREE.Mesh(torusdona2,material12);  
+scene.add(mesh12);
+mesh12.position.set(6,0,12);
+
+//plano
+     var plane01=new THREE.PlaneGeometry(4,4);
+     var material013=new THREE.MeshBasicMaterial ({color:0x659fdc});
+     var mesh013=new THREE.Mesh(plane01,material013);
+     scene.add(mesh013);
+     mesh013.position.set(0,2,-5);
+
+     //plano2
+     var plane02=new THREE.PlaneGeometry(4,4);
+     var material014=new THREE.MeshBasicMaterial ({color:0xb67ad8,wireframe:true});
+     var mesh014=new THREE.Mesh(plane02,material014);
+     scene.add(mesh014);
+     mesh014.position.set(5,2,-5);
+
+     //circulo y poligono
+     var circle03=new THREE.CircleGeometry(2.25);
+     var material015=new THREE.MeshBasicMaterial ({color:0xd87aca});
+     var mesh015=new THREE.Mesh(circle03,material015);
+     scene.add(mesh015);
+     mesh015.position.set(5,2,10);
+
+     //circulo y poligono2
+     var circle04=new THREE.CircleGeometry(2.25);
+     var material016=new THREE.MeshBasicMaterial ({color:0xd87a7a,wireframe:true});
+     var mesh016=new THREE.Mesh(circle04,material016);
+     scene.add(mesh016);
+     mesh016.position.set(10,2,10);
+
+     //ring
+     var ring01=new THREE.RingGeometry(1,2,16);
+     var material017=new THREE.MeshBasicMaterial ({color:0xf5bfff});
+     var mesh017=new THREE.Mesh(ring01,material017);
+     scene.add(mesh017);
+     mesh017.position.set(10,2,6);
+
+     //ring2
+     var ring02=new THREE.RingGeometry(1,2,16);
+     var material018=new THREE.MeshBasicMaterial ({color:0xd0bfff,wireframe:true});
+     var mesh018=new THREE.Mesh(ring02,material018);
+     scene.add(mesh018);
+     mesh018.position.set(5,2,6);
+
+     //icosaedro
+     var icosahedron01=new THREE.IcosahedronGeometry(2,0);
+     var material019=new THREE.MeshBasicMaterial ({color:0xd4b79d});
+     var mesh019=new THREE.Mesh(icosahedron01,material019);
+     scene.add(mesh019);
+     mesh019.position.set(-6,2,-6);
+
+     //icosaedro2
+     var icosahedron02=new THREE.IcosahedronGeometry(2,0);
+     var material020=new THREE.MeshBasicMaterial ({color:0xd0d49d,wireframe:true});
+     var mesh020=new THREE.Mesh(icosahedron02,material020);
+     scene.add(mesh020);
+     mesh020.position.set(-11,2,-6);
+
+     //dodecaedro
+     var Dodecaedro01=new THREE.DodecahedronGeometry(1.5,0);
+     var material021=new THREE.MeshBasicMaterial ({color:0x92e4fe});
+     var mesh021=new THREE.Mesh(Dodecaedro01,material021);
+     scene.add(mesh021);
+     mesh021.position.set(5,2,-10);
+
+     //dodecaedro2
+     var dodecahedron02=new THREE.DodecahedronGeometry(2,0);
+     var material022=new THREE.MeshBasicMaterial ({color:0xcffe92,wireframe:true});
+     var mesh022=new THREE.Mesh(dodecahedron02,material022);
+     scene.add(mesh022);
+     mesh022.position.set(0,2,-10);
+    
+     //octaedro
+     var octahedron01=new THREE.OctahedronGeometry(2,0);
+     var material023=new THREE.MeshBasicMaterial ({color:0x9dd4b4});
+     var mesh023=new THREE.Mesh(octahedron01.materiaL023);
+     scene.add(mesh023);
+     mesh023.position.set(0,0,0);
+
+     //octaedro2
+     var octaedron02=new THREE.OctahedronGeometry(2,0);
+     var material024=new THREE.MeshBasicMaterial ({color:0xeffe92});
+     var mesh024=new THREE.Mesh(octaedron02.materiaL024);
+     scene.add(mesh024);
+     mesh024.position.set(0,0,0);
+
+     //tetraedro
+     var tetrahedron01=new THREE.TetrahedronGeometry(2,0);
+     var material025=new THREE.MeshBasicMaterial ({color:0x9dafd4});
+     var mesh025=new THREE.Mesh(tetrahedron01,material025);
+     scene.add(mesh025);
+     mesh025.position.set(14,2,-10);
+
+     //tetraedro2
+     var tetrahedron02=new THREE.TetrahedronGeometry(2,0);
+     var material026=new THREE.MeshBasicMaterial ({color:0xfef292,wireframe:true});
+     var mesh026=new THREE.Mesh(tetrahedron02,material026);
+     scene.add(mesh026);
+     mesh026.position.set(10,2,-10);
+
+
+
+      //🎰🎰Rendering y animación
+      requestAnimationFrame(render);
+      function render() {
+
+      //🪄🪄 Animación
+
+      
+      mesh1.rotation.x +=0.01;
+      mesh1.rotation.y +=0.01;
+      mesh1.rotation.z +=0.01;
+
+      
+      mesh4.rotation.x +=0.01;
+      mesh4.rotation.y +=0.01;
+      mesh4.rotation.z +=0.01;
+
+    
+      mesh6.rotation.x +=0.01;
+      mesh6.rotation.y +=0.01;
+      mesh6.rotation.z +=0.01;
+
+     
+      mesh8.rotation.x +=0.01;
+      mesh8.rotation.y +=0.01;
+      mesh8.rotation.z +=0.01;
+
+    
+      mesh10.rotation.x +=0.01;
+      mesh10.rotation.y +=0.01;
+      mesh10.rotation.z +=0.01;
+
+      
+      mesh12.rotation.x +=0.01;
+      mesh12.rotation.y +=0.01;
+      mesh12.rotation.z +=0.05;
+
+      mesh01.rotation.x +=0.01;
+      mesh01.rotation.y +=0.03;
+      mesh01.rotation.z +=0.01;
+
+      mesh011.rotation.x +=0.05;
+      mesh011.rotation.y +=0.02;
+      mesh011.rotation.z +=0.01;
+
+      
+      mesh012.rotation.x +=0.01;
+      mesh012.rotation.y +=0.03;
+      mesh012.rotation.z +=0.02;
+
+      mesh010.rotation.x +=0.03;
+      mesh010.rotation.y +=0.03;
+      mesh010.rotation.z +=0.03;
+
+      mesh09.rotation.x +=0.01;
+      mesh09.rotation.y +=0.03;
+      mesh09.rotation.z +=0.01;
+
+      mesh07.rotation.z +=0.03;
+      mesh05.rotation.z +=0.06;
+      mesh06.rotation.z +=0.03;
+
+      mesh04.rotation.x +=0.03;
+      mesh03.rotation.y +=0.02;
+      mesh02.rotation.y +=0.03;
+
+      mesh08.rotation.z +=0.01;
+      mesh013.rotation.z +=0.04;
+      mesh014.rotation.z +=0.01;
+
+      mesh015.rotation.x +=0.01;
+      mesh016.rotation.x +=0.02;
+      mesh017.rotation.x +=0.05;
+
+      mesh018.rotation.y +=0.03;
+      mesh019.rotation.y +=0.05;
+      mesh020.rotation.y +=0.04;
+
+      mesh021.rotation.y +=0.03;
+      mesh022.rotation.y +=0.05;
+      mesh023.rotation.y +=0.04;
+
+      mesh024.rotation.y +=0.03;
+      mesh025.rotation.z +=0.05;
+      mesh026.rotation.y +=0.02;
+
+      controls.update();
+
+      //Llamado para renderizar y volver a llamar a la misma función (render)
+      renderer.render(scene, camera);
+      requestAnimationFrame(render);
+      }
+</script>
+</body>
+</html>

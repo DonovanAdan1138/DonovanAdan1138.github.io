@@ -1,0 +1,358 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+<meta charset="UTF-8" /> 
+     <title>Archivo base</title>
+     <style>
+     </style>
+</head>
+<body>
+<canvas id="myCanvas">
+    <!--El elemento HTML canvas se puede utilizar para dibujar gráficos a través de 
+        secuencias de comandos (por lo general JavaScript ).-->
+</canvas>
+<script type="importmap"> 
+    {
+        "imports":{
+            "three": "./js/three.module.js",
+            "three/OrbitControls": "./js/OrbitControls.js" 
+        }
+}
+</script>
+<script type="module"> 
+    //👉🏽 Mandar llamar a la librería
+    import * as THREE from 'three'; 
+    import {OrbitControls} from 'three/OrbitControls';
+    console.log(OrbitControls);
+
+    //👉🏽 Renderer - Realiza una conexión entre el código y el canvas
+    var renderer = new THREE.WebGLRenderer({canvas: document.getElementById('myCanvas'),antialias: true});
+    renderer.setPixelRatio(window.decivePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x9875432098 );
+
+    //🎬 Creando nueva escena 
+    var scene = new THREE.Scene();
+
+    //🎥 Agregar una cámara de perspectiva
+    var camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 5000);
+    scene.add(camera);
+
+    //👉🏽Settings de la cámara
+    camera.position.set(0, 4, 25);
+
+    //👉🏽Añadiendo los OrbitControls
+    var controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    //✏️GridHelper
+    const gridHelper = new THREE.GridHelper(100,100);
+    scene.add (gridHelper);
+
+    //✏️Ejes
+    const axesHelper = new THREE.AxesHelper(50);
+    scene.add (axesHelper);
+  
+
+    // 🪄🪄 SECCIÓN DE CÓDIGO 🪄🪄
+  
+
+    //Corona
+var ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+var pointLight = new THREE.PointLight(0xffffff, 1);
+pointLight.position.set(10, 10, 10);
+scene.add(pointLight);
+var crownGeometry = new THREE.TorusGeometry(5, 1.2, 16, 100); 
+var crownMaterial = new THREE.MeshStandardMaterial({ color: 0x228B22 }); 
+var crown = new THREE.Mesh(crownGeometry, crownMaterial);
+scene.add(crown);
+var sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+var colors = [0xff0000, 0xffff00, 0xffffff, 0x0000ff]; 
+
+
+  
+  var geometry02=new THREE.SphereGeometry(2,15,15);
+    var material02=new THREE.MeshBasicMaterial({color:0x960ff});
+    var mesh02=new THREE.Mesh(geometry02,material02);
+    scene.add(mesh02);
+    mesh02.position.set(5,-1,1);
+    mesh02.scale.set(.3,.3,.3);
+
+
+    var mesh02Clone2 = mesh02.clone();
+mesh02Clone2.position.set(-5, 0, 0);
+scene.add(mesh02Clone2);
+mesh02Clone2.position.set(-4.5,2,1);
+    mesh02Clone2.scale.set(.3,.3,.3);
+
+
+    var geometry03=new THREE.SphereGeometry(2,15,15);
+    var material03=new THREE.MeshBasicMaterial({color:0xff0000});
+    var mesh03=new THREE.Mesh(geometry03,material03);
+    scene.add(mesh03);
+    mesh03.position.set(4,3,1);
+    mesh03.scale.set(.3,.3,.3);
+
+    var mesh03Clone3 = mesh03.clone();
+    mesh03Clone3.position.set(-5, 0, 0);
+scene.add(mesh03Clone3);
+mesh03Clone3.position.set(-.5,-5,1);
+    mesh03Clone3.scale.set(.3,.3,.3);
+
+
+    var geometry04=new THREE.SphereGeometry(2,15,15);
+    var material04=new THREE.MeshBasicMaterial({color:0xfbff00});
+    var mesh04=new THREE.Mesh(geometry04,material04);
+    scene.add(mesh04);
+    mesh04.position.set(0,5,1);
+    mesh04.scale.set(.3,.3,.3);
+
+    var mesh04Clone4 = mesh04.clone();
+    mesh04Clone4.position.set(-5, 0, 0);
+scene.add(mesh04Clone4);
+mesh04Clone4.position.set(-4,-3,1);
+    mesh04Clone4.scale.set(.3,.3,.3);
+
+
+    var geometry05 = new THREE.SphereGeometry(2, 15, 15);
+var material05 = new THREE.MeshBasicMaterial({ color: 0x9700ff});
+var mesh05 = new THREE.Mesh(geometry05, material05);
+scene.add(mesh05);
+mesh05.position.set(-3, 4, 1);
+mesh05.scale.set(0.3, 0.3, 0.3);
+
+var mesh05Clone5 = mesh05.clone();
+mesh05Clone5.position.set(-5, 0, 0);
+scene.add(mesh05Clone5);
+mesh05Clone5.position.set(3, -4, 1);
+mesh05Clone5.scale.set(0.3, 0.3, 0.3);
+
+
+
+var geometry06 = new THREE.SphereGeometry(2, 15, 15);
+var material06 = new THREE.MeshBasicMaterial({ color: 0xff00f7 });
+var mesh06 = new THREE.Mesh(geometry06, material06);
+scene.add(mesh06);
+mesh06.position.set(2.5, 4.5, 1);
+mesh06.scale.set(0.3, 0.3, 0.3);
+
+var mesh06Clone6 = mesh06.clone();
+mesh06Clone6.position.set(-5, 0, 0);
+scene.add(mesh06Clone6);
+mesh06Clone6.position.set(-5, -1, 1);
+mesh06Clone6.scale.set(0.3, 0.3, 0.3);
+
+
+var geometry07 = new THREE.SphereGeometry(2, 15, 15);
+var material07 = new THREE.MeshBasicMaterial({ color: 0x00ffd4 });
+var mesh07 = new THREE.Mesh(geometry07, material07);
+scene.add(mesh07);
+mesh07.position.set(5, 1, 1);
+mesh07.scale.set(0.3, 0.3, 0.3);
+
+var mesh07Clone7 = mesh07.clone();
+mesh07Clone7.position.set(-5, 0, 0);
+scene.add(mesh07Clone7);
+mesh07Clone7.position.set(-2.5, -4.5, 1);
+mesh07Clone7.scale.set(0.3, 0.3, 0.3);
+
+
+
+var geometry08 = new THREE.SphereGeometry(2, 15, 15);
+var material08 = new THREE.MeshBasicMaterial({ color: 0xffb600 });
+var mesh08 = new THREE.Mesh(geometry08, material08);
+scene.add(mesh08);
+mesh08.position.set(1.5, -4.5, 1);
+mesh08.scale.set(0.3, 0.3, 0.3);
+
+var mesh08Clone8 = mesh08.clone();
+mesh08Clone8.position.set(-5, 0, 0);
+scene.add(mesh08Clone8);
+mesh08Clone8.position.set(4, -3, 1);
+mesh08Clone8.scale.set(0.3, 0.3, 0.3);
+
+////////////////////////////////////////////////
+//////Corona
+
+
+
+//// Estrella
+var geometry12=new THREE.OctahedronGeometry(8,0);
+    var material12=new THREE.MeshBasicMaterial({color:0xfffb00});
+    var mesh12=new THREE.Mesh(geometry12,material12);
+    scene.add(mesh12);
+    mesh12.position.set(5,20,-10);
+    mesh12.scale.set(0.3, 0.3, 0.3);
+
+
+    // Bota
+    var materialRed = new THREE.MeshStandardMaterial({ color: 0xff0000});
+var materialGreen = new THREE.MeshStandardMaterial({ color: 0x00ff00});
+var materialGold = new THREE.MeshStandardMaterial({ color: 0xffd700});
+var materialBlue = new THREE.MeshStandardMaterial({ color: 0x0000ff});
+
+// Crear las esferas de Navidad
+var geometry = new THREE.SphereGeometry(2, 16, 16);  
+
+// Esfera roja
+var sphereRed = new THREE.Mesh(geometry, materialRed);
+sphereRed.position.set(15, 5, 0);
+scene.add(sphereRed);
+
+// Esfera verde
+var sphereGreen = new THREE.Mesh(geometry, materialGreen);
+sphereGreen.position.set(20, 5, 0);
+scene.add(sphereGreen);
+
+// Esfera dorada
+var sphereGold = new THREE.Mesh(geometry, materialGold);
+sphereGold.position.set(25, 5, 0);
+scene.add(sphereGold);
+
+// Esfera azul
+var sphereBlue = new THREE.Mesh(geometry, materialBlue);
+sphereBlue.position.set(30, 5, 0);
+scene.add(sphereBlue);
+
+
+
+var geometry05=new THREE.TorusGeometry(2,1,10,10);
+    var material05=new THREE.MeshBasicMaterial({color:0xebebeb});
+    var mesh05=new THREE.Mesh(geometry05,material05);
+    scene.add(mesh05);
+    mesh05.position.set(15,6.5,0);
+    mesh05.scale.set(.4,.5,.3);
+
+    var mesh05Clone1 = mesh05.clone();
+mesh05Clone1.position.set(25, 6.5, 0);  
+scene.add(mesh05Clone1);
+mesh05Clone1.scale.set(0.5, 0.5, 0.5);  
+var mesh05Clone2 = mesh05.clone();
+mesh05Clone2.position.set(20, 6.5, 0);  
+scene.add(mesh05Clone2);
+mesh05Clone2.scale.set(0.5, 0.5, 0.5);  
+var mesh05Clone3 = mesh05.clone();
+mesh05Clone3.position.set(30, 6.5, 0);  
+scene.add(mesh05Clone3);
+mesh05Clone3.scale.set(0.5, 0.5, 0.5); 
+
+
+/// Gorro 
+var geometryCone = new THREE.ConeGeometry(3, 5, 32);  
+var materialCone = new THREE.MeshBasicMaterial({ color: 0xff0000 });  
+var cone = new THREE.Mesh(geometryCone, materialCone);
+scene.add(cone);
+cone.position.set(-10, 5, 0); 
+
+
+var geometryBase = new THREE.CylinderGeometry(3.5, 3.5, 1, 32); 
+var materialBase = new THREE.MeshBasicMaterial({ color: 0xffffff });
+var base = new THREE.Mesh(geometryBase, materialBase);
+scene.add(base);
+base.position.set(-10, 2.5, 0);  
+
+var geometryPompon = new THREE.SphereGeometry(1, 16, 16);
+var materialPompon = new THREE.MeshBasicMaterial({ color: 0xffffff }); 
+var pompon = new THREE.Mesh(geometryPompon, materialPompon);
+scene.add(pompon);
+pompon.position.set(-10, 7, 0);  
+
+
+cone.scale.set(1, 1, 1);
+base.scale.set(1, 1, 1);
+pompon.scale.set(1, 1, 1);
+
+
+
+
+///Noche Buena 
+
+var geometrySphere = new THREE.SphereGeometry(2, 32, 32); 
+var materialSphere = new THREE.MeshBasicMaterial({ color: 0xfffb00}); 
+var sphere = new THREE.Mesh(geometrySphere, materialSphere);
+scene.add(sphere);
+sphere.position.set(-20, 2, 0);
+sphere.scale.set(.6,.6,.6);
+
+
+var geometryCone = new THREE.ConeGeometry(2, 5, 32);  
+var materialCone = new THREE.MeshBasicMaterial({ color: 0xff0000});  
+var cone = new THREE.Mesh(geometryCone, materialCone);
+cone.rotation.x = Math.PI / 1; 
+scene.add(cone);
+cone.position.set(-20, -.4, 0);
+cone.scale.set(.6,.6,.6);
+
+var coneClone = cone.clone();  
+coneClone.rotation.x = Math.PI / 360;
+scene.add(coneClone);
+coneClone.position.set(-20, 4.5, 0);  
+coneClone.scale.set(.6,.6,.6);
+
+
+var coneClone01 = cone.clone();  
+coneClone01.rotation.z = 185 * (Math.PI / 42);
+scene.add(coneClone01);
+coneClone01.position.set(-22, 1, 0); 
+coneClone01.scale.set(.6,.6,.6);
+
+
+var coneClone02 = cone.clone();
+coneClone02.rotation.z = 185 * (Math.PI / -42);
+scene.add(coneClone02);
+coneClone02.position.set(-18, 1, 0); 
+coneClone02.scale.set(.6,.6,.6);
+
+
+var coneClone03 = cone.clone();
+coneClone03.rotation.z = 280 * (Math.PI / 200);
+scene.add(coneClone03);
+coneClone03.position.set(-18, 3, 0); 
+coneClone03.scale.set(.6,.6,.6);
+
+var coneClone04 = cone.clone();
+coneClone04.rotation.z = 280 * (Math.PI / -200);
+scene.add(coneClone04);
+coneClone04.position.set(-22, 3, 0); 
+coneClone04.scale.set(.6,.6,.6);
+
+
+
+var geometryCone02 = new THREE.ConeGeometry(2, 7, 5);  
+var materialCone02 = new THREE.MeshBasicMaterial({ color: 0x0b5345 });  
+var cone02 = new THREE.Mesh(geometryCone02, materialCone02);
+cone02.rotation.z = 280 * (Math.PI / 150);
+scene.add(cone02);
+cone02.position.set(-19, 4.5, -.1);
+cone02.scale.set(.7,.7,.4);
+
+
+var geometryCone03 = new THREE.ConeGeometry(2, 7, 5);  
+var materialCone03 = new THREE.MeshBasicMaterial({ color: 0x0b5345 });  
+var cone03 = new THREE.Mesh(geometryCone02, materialCone02);
+cone03.rotation.z = 185 * (Math.PI / -57);
+scene.add(cone03);
+cone03.position.set(-21,0, -.1);
+cone03.scale.set(.7,.7,.4);
+
+
+
+
+
+      //🎰🎰Rendering y animación
+      requestAnimationFrame(render);
+      function render() {
+
+      //🪄🪄 Animación
+
+      controls.update();
+
+      //Llamado para renderizar y volver a llamar a la misma función (render)
+      renderer.render(scene, camera);
+      requestAnimationFrame(render);
+      }
+</script>
+</body>
+</html>
